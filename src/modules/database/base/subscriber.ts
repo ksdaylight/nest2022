@@ -55,7 +55,7 @@ export abstract class BaseSubscriber<E extends ObjectLiteral>
 
     protected getRepository<
         C extends ClassType<T>,
-        T extends RepositoryType<T>,
+        T extends RepositoryType<E>,
         A extends EntityTarget<ObjectLiteral>,
     >(event: SubscriberEvent<E>, repository?: C, entity?: A) {
         return isNil(repository)

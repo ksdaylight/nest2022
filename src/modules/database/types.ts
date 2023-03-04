@@ -76,3 +76,6 @@ export type RepositoryType<E extends ObjectLiteral> =
     | TreeRepository<E>
     | BaseTreeRepository<E>
     | BaseRepository<E>;
+export interface TrashedOptions {
+    trashed?: SelectTrashMode;
+}
