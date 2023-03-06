@@ -3,7 +3,7 @@ import { isNil } from 'lodash';
 import { In, ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 
 import { SelectTrashMode, TreeChildrenResolve } from '../constants';
-import { manualPaginate, paginate } from '../helper';
+import { manualPaginate, paginate } from '../helpers';
 
 import { PaginateOptions, PaginateReturn, QueryHook, ServiceListQueryOption } from '../types';
 

@@ -15,7 +15,7 @@ import {
     EntityTarget,
 } from 'typeorm';
 
-import { getCustomRepository } from '../helper';
+import { getCustomRepository } from '../helpers';
 import { RepositoryType } from '../types';
 
 type SubscriberEvent<E extends ObjectLiteral> =

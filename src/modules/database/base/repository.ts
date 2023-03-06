@@ -2,7 +2,7 @@ import { isNil } from 'lodash';
 import { ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { OrderType } from '../constants';
-import { getOrderByQuery } from '../helper';
+import { getOrderByQuery } from '../helpers';
 import { OrderQueryType } from '../types';
 
 export abstract class BaseRepository<E extends ObjectLiteral> extends Repository<E> {

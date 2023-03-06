@@ -1,3 +1,4 @@
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {
     FindTreeOptions,
     ObjectLiteral,
@@ -79,3 +80,17 @@ export type RepositoryType<E extends ObjectLiteral> =
 export interface TrashedOptions {
     trashed?: SelectTrashMode;
 }
+
+export type DbConfigOptions = {
+    common: Record<string, any>;
+    connections: Array<TypeOrmModuleOptions>;
+};
+
+export type DbConfig = Record<string, any> & {
+    common: Record<string, any>;
+    connections: TypeormOption[];
+};
+
+export type TypeormOption = Omit<TypeOrmModuleOptions, 'name' | 'migrations'> & {
+    name: string;
+};

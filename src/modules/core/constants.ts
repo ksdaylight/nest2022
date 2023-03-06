@@ -9,3 +9,5 @@ export enum EnvironmentType {
     TEST = 'test',
     PREVIEW = 'preview',
 }
+
+export const MODULE_BUILDER_REGISTER = 'module_builder_register';

@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 
 import { OrderType, TreeChildrenResolve } from '../constants';
-import { getOrderByQuery } from '../helper';
+import { getOrderByQuery } from '../helpers';
 import { OrderQueryType, QueryParams } from '../types';
 
 export class BaseTreeRepository<E extends ObjectLiteral> extends TreeRepository<E> {

@@ -1,5 +1,8 @@
 import { Type } from '@nestjs/common';
+import { ExternalDocumentationObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { ClassTransformOptions } from 'class-transformer';
+
+import { Configure } from '../core/configure';
 /**
  * CURD控制器方法列表
  */
@@ -21,4 +24,47 @@ export interface CrudOptions {
     dtos: {
         [key in 'list' | 'store' | 'update']?: Type<any>;
     };
+}
+
+export type CrudOptionsRegister = (configure: Configure) => CrudOptions | Promise<CrudOptions>;
+
+// api
+export interface ApiTagOption {
+    name: string;
+    description?: string;
+    externalDocs?: ExternalDocumentationObject;
+}
+export interface ApiDocSource {
+    title?: string;
+    description?: string;
+    auth?: boolean;
+    tags?: (string | ApiTagOption)[];
+}
+export interface ApiRouteOption {
+    name: string;
+    path: string;
+    children?: ApiRouteOption[];
+    controller: Type<any>[];
+    doc?: ApiDocSource;
+}
+export interface ApiVersionOption extends ApiDocSource {
+    routes?: ApiRouteOption[];
+}
+export interface ApiConfig extends ApiDocSource {
+    prefix?: {
+        route?: string;
+        doc?: string;
+    };
+    default: string;
+    ebabled: string[];
+    versions: Record<string, ApiVersionOption>;
+}
+export interface ApiSwaggerOption extends ApiDocSource {
+    version: string;
+    path: string;
+    include: Type<any>[];
+}
+export interface ApiDocOption {
+    default?: ApiSwaggerOption;
+    routes?: { [key: string]: ApiSwaggerOption };
 }
