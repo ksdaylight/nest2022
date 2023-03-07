@@ -44,7 +44,7 @@ export interface ApiRouteOption {
     name: string;
     path: string;
     children?: ApiRouteOption[];
-    controller: Type<any>[];
+    controllers: Type<any>[];
     doc?: ApiDocSource;
 }
 export interface ApiVersionOption extends ApiDocSource {
@@ -56,7 +56,7 @@ export interface ApiConfig extends ApiDocSource {
         doc?: string;
     };
     default: string;
-    ebabled: string[];
+    enabled: string[];
     versions: Record<string, ApiVersionOption>;
 }
 export interface ApiSwaggerOption extends ApiDocSource {
