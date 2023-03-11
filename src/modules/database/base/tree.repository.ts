@@ -46,9 +46,9 @@ export class BaseTreeRepository<E extends ObjectLiteral> extends TreeRepository<
         return !isNil(orderByQuery) ? getOrderByQuery(qb, this.qbName, orderByQuery) : qb;
     }
 
-    async findTrees(optins?: FindTreeOptions & QueryParams<E>) {
-        const roots = await this.findRoots(optins);
-        await Promise.all(roots.map((root) => this.findDescendantsTree(root, optins)));
+    async findTrees(options?: FindTreeOptions & QueryParams<E>) {
+        const roots = await this.findRoots(options);
+        await Promise.all(roots.map((root) => this.findDescendantsTree(root, options)));
         return roots;
     }
 

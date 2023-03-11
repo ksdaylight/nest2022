@@ -39,8 +39,8 @@ export abstract class BaseService<
         return qb;
     }
 
-    protected async buildListQB(qb: SelectQueryBuilder<E>, optins?: P, callback?: QueryHook<E>) {
-        const { trashed } = optins ?? {};
+    protected async buildListQB(qb: SelectQueryBuilder<E>, options?: P, callback?: QueryHook<E>) {
+        const { trashed } = options ?? {};
         const queryName = this.repository.qbName;
 
         if (
