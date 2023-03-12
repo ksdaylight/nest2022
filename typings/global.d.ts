@@ -8,7 +8,10 @@ declare type BaseType = boolean | number | string | undefined | null;
  * 环境变量类型转义函数接口
  */
 declare type ParseType<T extends BaseType = string> = (value: string) => T;
-
+/**
+ * 类转义为普通对象后的类型
+ */
+declare type ClassToPlain<T> = { [key in keyof T]: T[key] };
 /**
  * 嵌套对象全部可选
  */
