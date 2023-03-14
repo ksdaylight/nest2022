@@ -42,3 +42,15 @@ declare type RePartial<T> = {
 };
 
 */
+/**
+ * 嵌套对象全部必选
+ */
+declare type ReRequired<T> = {
+    [P in keyof T]-?: T[P] extends (infer U)[] | undefined
+        ? ReRequired<U>[]
+        : T[P] extends object | undefined
+        ? T[P] extends ((...args: any[]) => any) | ClassType<T[P]> | undefined
+            ? T[P]
+            : ReRequired<T[P]>
+        : T[P];
+};

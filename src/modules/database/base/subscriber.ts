@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common';
 import { isNil } from 'lodash';
 import {
     EntitySubscriberInterface,
@@ -33,8 +34,8 @@ export abstract class BaseSubscriber<E extends ObjectLiteral>
 {
     protected abstract entity: ObjectType<E>;
 
-    constructor(protected dataSource: DataSource) {
-        this.dataSource.subscribers.push(this);
+    constructor(@Optional() protected dataSource: DataSource) {
+        if (!isNil(this.dataSource)) this.dataSource.subscribers.push(this);
     }
 
     listenTo() {
