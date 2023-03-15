@@ -1,5 +1,8 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Ora } from 'ora';
 import {
+    DataSource,
+    EntityManager,
     FindTreeOptions,
     ObjectLiteral,
     Repository,
@@ -7,6 +10,8 @@ import {
     TreeRepository,
 } from 'typeorm';
 import yargs from 'yargs';
+
+import { Configure } from '../core/configure';
 
 import { BaseRepository, BaseTreeRepository } from './base';
 
@@ -100,6 +105,9 @@ export type TypeormOption = Omit<TypeOrmModuleOptions, 'name' | 'migrations'> & 
  * 用于CLI工具
  */
 type DbAdditionalOption = {
+    seedRunner?: SeederConstructor;
+    seeders?: SeederConstructor[];
+    factories?: (() => DbFactoryOption<any, any>)[];
     paths?: {
         migration?: string;
     };
@@ -134,6 +142,7 @@ export interface MigrationRunOptions extends MigrationRevertOptions {
     refresh?: boolean;
     onlydrop?: boolean;
     clear?: boolean;
+    seed?: boolean;
 }
 
 /**
@@ -165,3 +174,67 @@ export type MigrationCreateArguments = TypeOrmArguments & MigrationCreateOptions
  * 恢复迁移的命令参数
  */
 export type MigrationRevertArguments = TypeOrmArguments & MigrationRevertOptions;
+
+/** ****************************** 数据填充Seeder **************************** */
+
+/**
+ * 数据填充处理器选项
+ */
+export interface SeederOptions {
+    connection?: string;
+    transaction?: boolean;
+}
+/**
+ * 数据填充命令参数
+ */
+export type SeederArguments = TypeOrmArguments & SeederOptions;
+
+/**
+ * 数据填充类接口
+ */
+export interface SeederConstructor {
+    new (spinner: Ora, args: SeederOptions): SeederArguments;
+}
+/**
+ * 数据填充类的load函数参数
+ */
+export interface SeederLoadParams {
+    /**
+     * 数据库连接名称
+     */
+    connection: string;
+    /**
+     * 数据库连接池
+     */
+    dataSource: DataSource;
+    /**
+     * EntityManager实例
+     */
+    em: EntityManager;
+    /**
+     * Factory解析器
+     */
+    factorier?: DbFactory;
+    /**
+     * Factory函数列表
+     */
+    factories: FactoryOptions;
+    /**
+     * 项目配置类
+     */
+    configure: Configure;
+}
+/**
+ * 数据填充类方法对象
+ */
+export interface Seeder {
+    load: (params: SeederLoadParams) => Promise<void>;
+}
+
+/** ****************************** 数据填充Factory **************************** */
+
+export interface DbFactory {
+    <Entity>(entity: EntityTarget<Entity>): <Optios>(
+        options?: Options,
+    ) => FactoryResolver<Entity, Options>;
+}

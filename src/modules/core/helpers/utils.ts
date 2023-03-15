@@ -1,9 +1,58 @@
 import { Module, ModuleMetadata, Type } from '@nestjs/common';
 import chalk from 'chalk';
+import dayjs from 'dayjs';
+import 'dayjs/locale/en';
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-tw';
+
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayOfYear from 'dayjs/plugin/dayOfYear';
+import localeData from 'dayjs/plugin/localeData';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import deepmerge from 'deepmerge';
 import { isArray, isNil, isObject } from 'lodash';
 
-import { PanicOption } from '../types';
+import { App } from '../app';
+
+import { AppConfig, PanicOption, TimeOptions } from '../types';
+
+dayjs.extend(localeData);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
+dayjs.extend(customParseFormat);
+dayjs.extend(dayOfYear);
+/**
+ * 获取小于N的随机整数
+ * @param count
+ */
+export const getRandomIndex = (count: number) => Math.floor(Math.random() * count);
+
+/**
+ * 从列表中获取一个随机项
+ * @param list
+ */
+export const getRandItemData = <T extends Record<string, any>>(list: T[]) => {
+    return list[getRandomIndex(list.length)];
+};
+
+/**
+ * 从列表中获取多个随机项组成一个新列表
+ * @param list
+ */
+export const getRandListData = <T extends Record<string, any>>(list: T[]) => {
+    const result: T[] = [];
+    for (let i = 0; i < getRandomIndex(list.length); i++) {
+        const random = getRandItemData<T>(list);
+        if (!result.find((item) => item.id === random.id)) {
+            result.push(random);
+        }
+    }
+    return result;
+};
+
 /**
  * 用于请求验证中的boolean数据转义
  * @param value
@@ -100,4 +149,12 @@ export const getRandomCharString = (length: number) => {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
+};
+
+export const getTime = async (options?: TimeOptions) => {
+    if (!options) return dayjs();
+    const { date, format, locale, strict, zonetime } = options;
+    const config = await App.configure.get<AppConfig>('app');
+    const now = dayjs(date, format, locale ?? config.locale, strict).clone();
+    return now.tz(zonetime ?? config.timezone);
 };

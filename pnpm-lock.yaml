@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@elastic/elasticsearch': ^8.6.0
+  '@faker-js/faker': ^7.6.0
   '@fastify/static': ^6.9.0
   '@nestjs/cli': ^9.1.8
   '@nestjs/common': ^9.2.1
@@ -29,6 +30,7 @@ specifiers:
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
   cross-env: ^7.0.3
+  dayjs: ^1.11.7
   deepmerge: ^4.2.2
   dotenv: ^16.0.3
   eslint: ^8.31.0
@@ -65,6 +67,7 @@ specifiers:
 
 dependencies:
   '@elastic/elasticsearch': 8.6.0
+  '@faker-js/faker': 7.6.0
   '@fastify/static': 6.9.0
   '@nestjs/common': 9.3.9_welcnyot5bzd5wa2aovbkxpi4i
   '@nestjs/core': 9.3.9_jrq2rdgfp2sx67wmylmrqliwxe
@@ -77,6 +80,7 @@ dependencies:
   chalk: 4.1.2
   class-transformer: 0.5.1
   class-validator: 0.14.0
+  dayjs: 1.11.7
   deepmerge: 4.3.0
   dotenv: 16.0.3
   find-up: 5.0.0
@@ -628,6 +632,11 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@faker-js/faker/7.6.0:
+    resolution: {integrity: sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==}
+    engines: {node: '>=14.0.0', npm: '>=6.0.0'}
+    dev: false
 
   /@fastify/accept-negotiator/1.1.0:
     resolution: {integrity: sha512-OIHZrb2ImZ7XG85HXOONLcJWGosv7sIvM2ifAPQVhg9Lv7qdmMBNVaai4QTdyuaqbKM5eO6sLSQOYI7wEQeCJQ==}
@@ -2403,6 +2412,10 @@ packages:
   /date-fns/2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
     engines: {node: '>=0.11'}
+    dev: false
+
+  /dayjs/1.11.7:
+    resolution: {integrity: sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==}
     dev: false
 
   /debug/3.2.7:
