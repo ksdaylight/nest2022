@@ -1,10 +1,13 @@
+import { Faker } from '@faker-js/faker';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Ora } from 'ora';
 import {
     DataSource,
     EntityManager,
+    EntityTarget,
     FindTreeOptions,
     ObjectLiteral,
+    ObjectType,
     Repository,
     SelectQueryBuilder,
     TreeRepository,
@@ -16,6 +19,7 @@ import { Configure } from '../core/configure';
 import { BaseRepository, BaseTreeRepository } from './base';
 
 import { OrderType, SelectTrashMode } from './constants';
+import { FactoryResolver } from './resolver';
 
 export interface PaginateOptions {
     page: number;
@@ -100,15 +104,27 @@ export type DbConfig = Record<string, any> & {
 
 export type TypeormOption = Omit<TypeOrmModuleOptions, 'name' | 'migrations'> & {
     name: string;
-} & ReRequired<DbAdditionalOption>;
+} & Required<DbAdditionalOption>;
 /**
  * 用于CLI工具
  */
 type DbAdditionalOption = {
+    /**
+     * 填充类
+     */
     seedRunner?: SeederConstructor;
+    /**
+     * 填充类列表
+     */
     seeders?: SeederConstructor[];
+    /**
+     * 数据构建函数列表
+     */
     factories?: (() => DbFactoryOption<any, any>)[];
     paths?: {
+        /**
+         * 迁移文件路径
+         */
         migration?: string;
     };
 };
@@ -117,7 +133,7 @@ type DbAdditionalOption = {
  * 基础数据库命令参数类型
  */
 export type TypeOrmArguments = yargs.Arguments<{
-    connections?: string;
+    connection?: string;
 }>;
 /**
  * 生成迁移处理器选项
@@ -193,8 +209,14 @@ export type SeederArguments = TypeOrmArguments & SeederOptions;
  * 数据填充类接口
  */
 export interface SeederConstructor {
-    new (spinner: Ora, args: SeederOptions): SeederArguments;
+    new (spinner: Ora, args: SeederOptions): Seeder;
 }
+/**
+ * 数据填充函数映射对象
+ */
+export type FactoryOptions = {
+    [entityName: string]: DbFactoryOption<any, any>;
+};
 /**
  * 数据填充类的load函数参数
  */
@@ -232,9 +254,46 @@ export interface Seeder {
 }
 
 /** ****************************** 数据填充Factory **************************** */
-
+/**
+ * Factory解析器
+ */
 export interface DbFactory {
-    <Entity>(entity: EntityTarget<Entity>): <Optios>(
+    <Entity>(entity: EntityTarget<Entity>): <Options>(
         options?: Options,
     ) => FactoryResolver<Entity, Options>;
 }
+
+/**
+ * Factory处理器
+ */
+export type DbFactoryHandler<E, O> = (faker: Faker, options: O) => Promise<E>;
+/**
+ * Factory解析后的元数据
+ */
+export type DbFactoryOption<E, O> = {
+    entity: ObjectType<E>;
+    handler: DbFactoryHandler<E, O>;
+};
+/**
+ * Factory自定义参数覆盖
+ */
+export type FactoryOverride<Entity> = {
+    [Property in keyof Entity]?: Entity[Property];
+};
+/**
+ * Factory构造器
+ */
+export type DbFactoryBuilder = (
+    dataSource: DataSource,
+    factories: {
+        [entityName: string]: DbFactoryOption<any, any>;
+    },
+) => DbFactory;
+/**
+ * Factory定义器
+ */
+
+export type DefineFactory = <E, O>(
+    entity: ObjectType<E>,
+    handler: DbFactoryHandler<E, O>,
+) => () => DbFactoryOption<E, O>;

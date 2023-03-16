@@ -1,5 +1,7 @@
 import { toNumber } from 'lodash';
 
+import { ContentFactory } from '@/database/factories/content.factory';
+import ContentSeeder from '@/database/seeders/content.seeder';
 import { createDbConfig } from '@/modules/database/helpers';
 
 /**
@@ -14,6 +16,8 @@ export const database = createDbConfig((configure) => ({
             username: configure.env('DB_USER', 'root'),
             password: configure.env('DB_PASSWORD', 'root'),
             database: configure.env('DB_NAME', '3r'),
+            seeders: [ContentSeeder],
+            factories: [ContentFactory],
         },
     ],
 }));

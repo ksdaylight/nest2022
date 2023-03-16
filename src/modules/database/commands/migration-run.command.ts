@@ -47,6 +47,12 @@ export const RunMigrationCommand: CommandItem<any, MigrationRunArguments> = ({ c
             describe: 'only drop database schema',
             default: false,
         },
+        seed: {
+            type: 'boolean',
+            alias: 's',
+            describe: 'run seeders after refresh database',
+            default: false,
+        },
     } as const,
 
     handler: async (args: yargs.Arguments<MigrationRunArguments>) =>

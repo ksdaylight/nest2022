@@ -10,6 +10,8 @@ import { Configure } from '@/modules/core/configure';
 import { EnvironmentType } from '@/modules/core/constants';
 import { panic } from '@/modules/core/helpers';
 
+import { getDbConfig, runSeeder } from '../helpers';
+import { SeedResolver } from '../resolver/seed.resolver';
 import { DbConfig, MigrationRunArguments } from '../types';
 
 import { TypeormMigrationRun } from './tyeporm-migration-run';
@@ -69,7 +71,21 @@ export const MigrationRunHandler = async (
     } catch (error) {
         if (dataSource && dataSource.isInitialized) await dataSource.destroy();
         panic({ spinner, message: 'Run migrations failed!', error });
-    } finally {
-        if (dataSource && dataSource.isInitialized) await dataSource.destroy();
+    }
+    if (args.seed) {
+        try {
+            spinner.start('Start run seeder');
+            const runner = (await getDbConfig(args.connection)).seedRunner ?? SeedResolver;
+            await runSeeder(
+                runner,
+                { connection: args.connection, transaction: true },
+                spinner,
+                configure,
+            );
+            spinner.succeed(`\n 👍 ${chalk.greenBright.underline(`Finished Seeding`)}`);
+        } catch (error) {
+            if (dataSource && dataSource.isInitialized) await dataSource.destroy();
+            panic({ spinner, message: `Run seeder failed`, error });
+        }
     }
 };

@@ -26,7 +26,7 @@ export const MigrationGenerateHandler = async (
     await MigrationRunHandler(configure, { connection: args.connection } as any);
     console.log();
     const spinner = ora('Start to generate migration');
-    const cname = args.connections ?? 'default';
+    const cname = args.connection ?? 'default';
     try {
         spinner.start();
         console.log();
