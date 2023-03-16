@@ -24,7 +24,16 @@ export class TypeormMigrationRun {
             default:
             // noop
         }
-
-        await dataSource.runMigrations(options);
+        //  console.log(JSON.stringify(options));
+        const migrations = await dataSource.runMigrations(options);
+        // console.dir(dataSource, { depth: 2 });
+        console.log(
+            `run options=> ${JSON.stringify(options)} migrations message(total : ${
+                migrations.length
+            }):\n`,
+        );
+        for (const migration of migrations) {
+            console.log(`Migration ${migration.name} finished at ${migration.timestamp}`);
+        }
     }
 }

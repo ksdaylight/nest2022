@@ -18,7 +18,7 @@ type HandlerOptions = MigrationGenerateOptions & {
 export class TypeormMigrationGenerate {
     async handler(args: HandlerOptions) {
         const timestamp = new Date().getTime();
-        const extension = 'ts';
+        const extension = '.ts';
         // const extension = args.outputJs ? '.js' : '.ts';
         const directory = args.dir.startsWith('/')
             ? args.dir

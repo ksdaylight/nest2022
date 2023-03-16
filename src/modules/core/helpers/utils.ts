@@ -143,7 +143,7 @@ export function panic(option: PanicOption | string) {
 
 export const getRandomCharString = (length: number) => {
     let result = '';
-    const characters = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));

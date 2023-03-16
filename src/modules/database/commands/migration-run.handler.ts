@@ -49,7 +49,7 @@ export const MigrationRunHandler = async (
             synchronize: false,
             migrationsRun: false,
             dropSchema,
-            logging: ['error'],
+            logging: ['query', 'error'],
             migrations: [join(dir, isProd ? '**/*.js' : '**/*.ts')],
         } as any;
         if (dropSchema) {
@@ -61,12 +61,13 @@ export const MigrationRunHandler = async (
         }
         dataSource.setOptions({ ...options, dropSchema: false });
         await dataSource.initialize();
-        console.log();
+
         await runner.handler({
             dataSource,
             transaction: args.transaction,
             fake: args.fake,
         });
+        console.log('end handler');
         spinner.succeed(chalk.greenBright.underline('\n 👍 Finished run migrations'));
     } catch (error) {
         if (dataSource && dataSource.isInitialized) await dataSource.destroy();
@@ -88,4 +89,5 @@ export const MigrationRunHandler = async (
             panic({ spinner, message: `Run seeder failed`, error });
         }
     }
+    if (dataSource && dataSource.isInitialized) await dataSource.destroy();
 };
