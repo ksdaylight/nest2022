@@ -6,8 +6,12 @@ import {
     EntityManager,
     EntityTarget,
     FindTreeOptions,
+    ManyToMany,
+    ManyToOne,
     ObjectLiteral,
     ObjectType,
+    OneToMany,
+    OneToOne,
     Repository,
     SelectQueryBuilder,
     TreeRepository,
@@ -20,7 +24,19 @@ import { BaseRepository, BaseTreeRepository } from './base';
 
 import { OrderType, SelectTrashMode } from './constants';
 import { FactoryResolver } from './resolver';
-
+/** ****************************** 数据查询及操作 **************************** */
+/**
+ * 动态关联接口
+ */
+export interface DynamicRelation {
+    relation:
+        | ReturnType<typeof OneToOne>
+        | ReturnType<typeof OneToMany>
+        | ReturnType<typeof ManyToOne>
+        | ReturnType<typeof ManyToMany>;
+    others?: Array<(...args: any) => any>;
+    column: string;
+}
 export interface PaginateOptions {
     page: number;
     limit: number;

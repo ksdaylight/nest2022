@@ -1,3 +1,5 @@
+import { SelectQueryBuilder } from 'typeorm';
+
 import { BaseRepository } from '@/modules/database/base';
 import { CustomRepository } from '@/modules/database/decorators';
 
@@ -7,7 +9,7 @@ import { CommentEntity, PostEntity } from '../entities';
 export class PostRepository extends BaseRepository<PostEntity> {
     protected _qbName = 'post';
 
-    buildBaseQB() {
+    buildBaseQB(): SelectQueryBuilder<PostEntity> {
         return this.createQueryBuilder(this.qbName)
             .leftJoinAndSelect(`${this.qbName}.categories`, 'categories')
             .addSelect((subQuery) => {
