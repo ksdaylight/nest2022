@@ -1,5 +1,5 @@
 {
     "default": [
-        "ContentSeeder"
+        "ContentSeeder"//分类和评论么加载进
     ]
 }
