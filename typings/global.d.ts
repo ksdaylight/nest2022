@@ -54,3 +54,8 @@ declare type ReRequired<T> = {
             : ReRequired<T[P]>
         : T[P];
 };
+
+/**
+ * 空对象
+ */
+export type RecordNever = Record<never, never>;

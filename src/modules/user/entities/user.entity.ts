@@ -11,6 +11,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
+import { PostEntity } from '@/modules/content/entities';
 import { BaseEntity } from '@/modules/database/base';
 import { AddRelations } from '@/modules/database/decorators';
 import { DynamicRelation } from '@/modules/database/types';
@@ -115,4 +116,8 @@ export class UserEntity extends BaseEntity {
         cascade: true,
     })
     permissions!: PermissionEntity[];
+
+    @Expose()
+    @OneToMany(() => PostEntity, (post) => post.author)
+    posts!: PostEntity[];
 }

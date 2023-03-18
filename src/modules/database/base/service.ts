@@ -33,9 +33,21 @@ export abstract class BaseService<
         }
     }
 
-    protected async BuildItemQB(id: string, qb: SelectQueryBuilder<E>, callback?: QueryHook<E>) {
+    protected async buildItemQB(id: string, qb: SelectQueryBuilder<E>, callback?: QueryHook<E>) {
         qb.where(`${this.repository.qbName}.id = :id`, { id });
         if (callback) return callback(qb);
+        return qb;
+    }
+
+    /**
+     * 获取查询单个项目的QueryBuilder
+     * @param querybuilder实例
+     * @param callback 查询回调
+     */
+    protected async buildItemQuery(qb: SelectQueryBuilder<E>, callback?: QueryHook<E>) {
+        if (callback) {
+            return callback(qb);
+        }
         return qb;
     }
 
@@ -85,7 +97,7 @@ export abstract class BaseService<
     }
 
     async detail(id: string, callback?: QueryHook<E>): Promise<E> {
-        const qb = await this.BuildItemQB(id, this.repository.buildBaseQB(), callback);
+        const qb = await this.buildItemQB(id, this.repository.buildBaseQB(), callback);
         const item = await qb.getOne();
         if (!item) throw new NotFoundException(`${this.repository.qbName} ${id} not exists!`);
         return item;
