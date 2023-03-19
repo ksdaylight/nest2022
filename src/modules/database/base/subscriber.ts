@@ -15,6 +15,7 @@ import {
     DataSource,
     EntityTarget,
 } from 'typeorm';
+import { ClassType } from 'typings/global';
 
 import { getCustomRepository } from '../helpers';
 import { RepositoryType } from '../types';

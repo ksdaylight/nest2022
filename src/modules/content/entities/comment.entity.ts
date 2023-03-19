@@ -11,10 +11,15 @@ import {
 
 import { BaseEntity } from '@/modules/database/base';
 
+import { UserEntity } from '@/modules/user/entities';
+
 import { PostEntity } from './post.entity';
 
 /**
- * 树形嵌套评论
+ * @description 树形嵌套评论
+ * @export
+ * @class CommentEntity
+ * @extends {BaseEntity}
  */
 @Exclude()
 @Tree('materialized-path')
@@ -50,4 +55,12 @@ export class CommentEntity extends BaseEntity {
     @Expose()
     @TreeChildren({ cascade: true })
     children: CommentEntity[];
+
+    @Expose()
+    @ManyToOne((type) => UserEntity, (user) => user.comments, {
+        nullable: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    user!: UserEntity;
 }

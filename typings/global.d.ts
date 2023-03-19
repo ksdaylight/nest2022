@@ -59,3 +59,7 @@ declare type ReRequired<T> = {
  * 空对象
  */
 export type RecordNever = Record<never, never>;
+/**
+ * 嵌套对象
+ */
+export type NestedRecord = Record<string, Record<string, any>>;

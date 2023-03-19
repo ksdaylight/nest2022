@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import findUp from 'find-up';
 import { ensureFileSync } from 'fs-extra';
 import { get, has, isFunction, isNil, omit, set } from 'lodash';
+import { BaseType, ParseType } from 'typings/global';
 import YAML from 'yaml';
 
 import { EnvironmentType } from './constants';

@@ -9,6 +9,10 @@ import { Configure } from '../core/configure';
 export type CrudMethod = 'detail' | 'delete' | 'restore' | 'list' | 'store' | 'update';
 
 export interface CrudMethodOption {
+    /**
+     * 该方法是否允许匿名访问
+     */
+    allowGuest?: boolean;
     serialize?: ClassTransformOptions | 'noGroup';
     hook?: (target: Type<any>, method: string) => void;
 }

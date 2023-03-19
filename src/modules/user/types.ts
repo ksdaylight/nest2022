@@ -1,4 +1,4 @@
-import { RecordNever } from 'typings/global';
+import { ClassToPlain, RecordNever } from 'typings/global';
 
 import { DynamicRelation } from '../database/types';
 
@@ -9,6 +9,7 @@ import {
     EmailCaptchaOption,
     PhoneCaptchaOption,
 } from './constants';
+import { MessageEntity } from './entities';
 
 /**
  * JWT配置
@@ -73,4 +74,12 @@ export interface CaptchaTimeOption {
 export type CaptchaValidate<T extends Record<string, any> = RecordNever> = T & {
     value: string;
     code: string;
+};
+
+/**
+ * 异步存储消息的数据类型
+ */
+export type SaveMessageQueueJob = Pick<ClassToPlain<MessageEntity>, 'title' | 'body' | 'type'> & {
+    receviers: string[];
+    sender: string;
 };

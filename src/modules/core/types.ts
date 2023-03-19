@@ -4,6 +4,7 @@ import { ModuleMetadata, PipeTransform, Type } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import dayjs from 'dayjs';
 import { Ora } from 'ora';
+import { RePartial } from 'typings/global';
 import { CommandModule } from 'yargs';
 
 import { Configure } from './configure';
@@ -33,7 +34,7 @@ export interface ConfigureFactory<
 }
 
 export type ConnectionOption<T extends Record<string, any>> = { name?: string } & T;
-export type ConnectionRst<T extends Record<string, any>> = Array<{ name?: string } & T>;
+export type ConnectionRst<T extends Record<string, any>> = Array<{ name: string } & T>;
 
 // module
 

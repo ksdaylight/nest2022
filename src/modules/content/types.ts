@@ -1,3 +1,5 @@
+import { ClassToPlain } from 'typings/global';
+
 import { PostEntity } from './entities';
 
 export type SearchType = 'like' | 'against' | 'elastic';

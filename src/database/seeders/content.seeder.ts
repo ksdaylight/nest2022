@@ -9,10 +9,13 @@ import { DataSource, EntityManager, In } from 'typeorm';
 import { CategoryEntity, CommentEntity, PostEntity } from '@/modules/content/entities';
 import { CategoryRepository, PostRepository } from '@/modules/content/repositories';
 
-import { getRandListData, panic } from '@/modules/core/helpers';
+import { getRandItemData, getRandListData, panic } from '@/modules/core/helpers';
 import { BaseSeeder } from '@/modules/database/base';
 
 import { DbFactory } from '@/modules/database/types';
+
+import { UserEntity } from '@/modules/user/entities';
+import { UserRepository } from '@/modules/user/repositories';
 
 import { getCustomRepository } from '../../modules/database/helpers';
 import { categories, CategoryData, PostData, posts } from '../factories/content.data';
@@ -23,7 +26,20 @@ export default class ContentSeeder extends BaseSeeder {
 
     protected factorier!: DbFactory;
 
-    private async genRandomComments(post: PostEntity, count: number, parent?: CommentEntity) {
+    async run(_factorier: DbFactory, _dataSource: DataSource, _em: EntityManager): Promise<any> {
+        this.factorier = _factorier;
+        const categoryRepository = getCustomRepository(this.dataSource, CategoryRepository);
+        if ((await categoryRepository.count()) < 10) await this.loadCategories(categories);
+        const postRepository = getCustomRepository(this.dataSource, PostRepository);
+        if ((await postRepository.count()) < 10) await this.loadPosts(posts);
+    }
+
+    private async genRandomComments(
+        users: UserEntity[],
+        post: PostEntity,
+        count: number,
+        parent?: CommentEntity,
+    ) {
         const comments: CommentEntity[] = [];
         for (let i = 0; i < count; i++) {
             const comment = new CommentEntity();
@@ -32,9 +48,11 @@ export default class ContentSeeder extends BaseSeeder {
             if (parent) {
                 comment.parent = parent;
             }
+            comment.user = getRandItemData(users);
             comments.push(await this.em.save(comment));
             if (Math.random() >= 0.8) {
                 comment.children = await this.genRandomComments(
+                    users,
                     post,
                     Math.floor(Math.random() * 2),
                     comment,
@@ -62,7 +80,15 @@ export default class ContentSeeder extends BaseSeeder {
 
     private async loadPosts(data: PostData[]) {
         const allCates = await this.em.find(CategoryEntity);
+        const userRepo = getCustomRepository(this.dataSource, UserRepository);
+        const creator = await userRepo.findOneByOrFail({ isCreator: true });
+        const users = await userRepo.find({ take: 5 });
         for (const item of data) {
+            const author = item.author
+                ? await userRepo.findOneByOrFail({
+                      username: item.author,
+                  })
+                : creator;
             const filePath = path.join(__dirname, '../../assets/posts', item.contentFile);
             if (!existsSync(filePath)) {
                 panic({
@@ -74,6 +100,7 @@ export default class ContentSeeder extends BaseSeeder {
                 title: item.title,
                 body: fs.readFileSync(filePath, 'utf8'),
                 isPublished: true,
+                author,
             };
             if (item.summary) {
                 options.summary = item.summary;
@@ -88,21 +115,14 @@ export default class ContentSeeder extends BaseSeeder {
             }
             const post = await this.factorier(PostEntity)(options).create();
 
-            await this.genRandomComments(post, Math.floor(Math.random() * 5));
+            await this.genRandomComments(users, post, Math.floor(Math.random() * 5));
         }
-        const randoms = await this.factorier(PostEntity)<IPostFactoryOptions>({
+        const redoms = await this.factorier(PostEntity)<IPostFactoryOptions>({
             categories: getRandListData(allCates),
+            author: creator,
         }).createMany(100);
-        for (const item of randoms) {
-            await this.genRandomComments(item, Math.floor(Math.random() * 2));
+        for (const redom of redoms) {
+            await this.genRandomComments(users, redom, Math.floor(Math.random() * 2));
         }
-    }
-
-    async run(_factorier: DbFactory, _dataSource: DataSource, _em: EntityManager): Promise<any> {
-        this.factorier = _factorier;
-        const categoryRepository = getCustomRepository(this.dataSource, CategoryRepository);
-        if ((await categoryRepository.count()) < 10) await this.loadCategories(categories);
-        const postRepository = getCustomRepository(this.dataSource, PostRepository);
-        if ((await postRepository.count()) < 10) await this.loadPosts(posts);
     }
 }

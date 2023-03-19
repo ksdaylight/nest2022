@@ -16,6 +16,8 @@ import {
     SelectQueryBuilder,
 } from 'typeorm';
 
+import { ClassType, RePartial } from 'typings/global';
+
 import { App } from '../core/app';
 import { Configure } from '../core/configure';
 import { deepMerge, panic } from '../core/helpers';
@@ -25,6 +27,7 @@ import { ConfigureFactory, ConfigureRegister } from '../core/types';
 
 import { CUSTOM_REPOSITORY_METADATA } from './constants';
 
+import { FactoryResolver } from './resolver';
 import {
     DbConfig,
     DbConfigOptions,
@@ -39,7 +42,6 @@ import {
     Seeder,
     FactoryOptions,
 } from './types';
-import { FactoryResolver } from './resolver';
 
 export const getOrderByQuery = <E extends ObjectLiteral>(
     qb: SelectQueryBuilder<E>,

@@ -1,4 +1,5 @@
 import { isNil, toNumber } from 'lodash';
+import { RePartial } from 'typings/global';
 
 import {
     AppConfig,
