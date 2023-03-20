@@ -1,18 +1,44 @@
-import { EnvironmentType } from '@/modules/core/constants';
-import { getRunEnv } from '@/modules/core/helpers';
-import { UserConfig } from '@/modules/user/types';
+import { OneToMany } from 'typeorm';
 
-const expiredTime = getRunEnv() === EnvironmentType.DEVELOPMENT ? 3600 * 10000 : 3600;
+import { CommentEntity, PostEntity } from '@/modules/content/entities';
+import { createUserConfig } from '@/modules/user/helpers';
 
 /**
  * 用户模块配置
  */
-export const userConfig: () => UserConfig = () => ({
-    hash: 10,
-    jwt: {
-        secret: 'my-secret',
-        token_expired: expiredTime,
-        refresh_secret: 'my-refresh-secret',
-        refresh_token_expired: expiredTime * 30,
-    },
-});
+
+export const user = createUserConfig((configure) => ({
+    enables: [
+        'phone-login',
+        'phone-register',
+        'phone-retrieve-password',
+        'phone-bound',
+        'email-login',
+        'email-register',
+        'email-retrieve-password',
+        'email-bound',
+        'message',
+    ],
+    relations: [
+        {
+            column: 'posts',
+            relation: OneToMany(
+                () => PostEntity,
+                (post) => post.author,
+                {
+                    cascade: true,
+                },
+            ),
+        },
+        {
+            column: 'comment',
+            relation: OneToMany(
+                () => CommentEntity,
+                (comment) => comment.user,
+                {
+                    cascade: true,
+                },
+            ),
+        },
+    ],
+}));

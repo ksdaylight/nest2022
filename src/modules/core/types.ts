@@ -78,13 +78,45 @@ export interface Creator {
     (): Promise<CreatorData>;
 }
 
+/**
+ * 应用配置
+ */
 export interface AppConfig {
+    /**
+     * 主机地址,默认为127.0.0.1
+     */
     host: string;
+    /**
+     * 监听端口,默认3100
+     */
     port: number;
+    /**
+     * 是否开启https,默认false
+     */
     https: boolean;
+    /**
+     * 时区,默认Asia/Shanghai
+     */
     timezone: string;
+    /**
+     * 语言,默认zh-cn
+     */
     locale: string;
+    /**
+     * 是否启用websockets服务
+     */
+    websockets: boolean;
+    /**
+     * 是否为服务器运行状态(无法设置,通过指定SERVER环境变量使用,默认false)
+     */
+    server: boolean;
+    /**
+     * 控制台打印的url,默认自动生成
+     */
     url?: string;
+    /**
+     * 由url+api前缀生成的基础api url
+     */
     api?: string;
 }
 

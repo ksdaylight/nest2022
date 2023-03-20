@@ -16,8 +16,8 @@ export const database = createDbConfig((configure) => ({
             username: configure.env('DB_USER', 'root'),
             password: configure.env('DB_PASSWORD', 'root'),
             database: configure.env('DB_NAME', '3r'),
-            seeders: [ContentSeeder],
-            factories: [ContentFactory],
+            seeders: [ContentSeeder, ContentSeeder],
+            factories: [ContentFactory, ContentFactory],
         },
     ],
 }));
