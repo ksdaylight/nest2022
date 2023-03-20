@@ -4,6 +4,7 @@ import { ClassTransformOptions } from 'class-transformer';
 import { isNil } from 'lodash';
 
 import { BaseController, BaseControllerWithTrash } from './base';
+import { ALLOW_GUEST } from './constants';
 
 import { CrudItem, CrudOptions } from './types';
 
@@ -65,6 +66,10 @@ export const registerCrud = async <T extends BaseController<any>>(
             );
             ApiQuery({ type: dtos.list })(Target, name, descriptor);
         }
+        if (option.allowGuest) {
+            Reflect.defineMetadata(ALLOW_GUEST, true, Target.prototype, name);
+        }
+
         let serialize: ClassTransformOptions = {};
         if (isNil(option.serialize)) {
             if (['detail', 'store', 'update', 'delete', 'restore'].includes(name)) {

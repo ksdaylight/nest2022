@@ -14,7 +14,7 @@ import { App } from '../app';
 import { Configure } from '../configure';
 import { MODULE_BUILDER_REGISTER } from '../constants';
 import { CoreModule } from '../core.module';
-import { AppFilter, AppIntercepter, AppPipe } from '../provisers';
+import { AppFilter, AppIntercepter, AppPipe } from '../providers';
 import {
     AppConfig,
     AppParams,

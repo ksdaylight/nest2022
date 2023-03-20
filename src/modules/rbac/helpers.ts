@@ -1,5 +1,5 @@
 import { MongoAbility } from '@casl/ability';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { FastifyRequest as Request } from 'fastify';
 import { isNil, isArray } from 'lodash';
 import { ObjectLiteral } from 'typeorm';
@@ -47,11 +47,21 @@ export const checkOwner = async <E extends ObjectLiteral>(
 export const simpleCurdOption = (
     permissions?: PermissionChecker[],
     apiSummary?: string,
+    guest?: boolean,
+    apiBearerAuth?: boolean,
 ): CrudMethodOption => ({
+    allowGuest: guest,
     hook: (target, method) => {
         if (permissions) ManualPermission(target, method, permissions);
         if (apiSummary) {
             ApiOperation({ summary: apiSummary })(
+                target,
+                method,
+                Object.getOwnPropertyDescriptor(target.prototype, method),
+            );
+        }
+        if (apiBearerAuth) {
+            ApiBearerAuth()(
                 target,
                 method,
                 Object.getOwnPropertyDescriptor(target.prototype, method),

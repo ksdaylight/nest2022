@@ -91,6 +91,10 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
     @ApiProperty({
         description: '待更新的分类ID',
     })
+    @IsDataExist(CategoryEntity, {
+        groups: ['update'],
+        message: '指定的分类不存在',
+    })
     @IsUUID(undefined, { groups: ['update'], message: '分类ID格式错误' })
     @IsDefined({ groups: ['update'], message: '分类ID必须指定' })
     id!: string;

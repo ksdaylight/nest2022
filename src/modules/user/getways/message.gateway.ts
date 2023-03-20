@@ -15,7 +15,7 @@ import { ClassToPlain } from 'typings/global';
 import WebSocket from 'ws';
 
 import { getTime } from '@/modules/core/helpers';
-import { WsExceptionFilter, WsPipe } from '@/modules/core/provisers';
+import { WsExceptionFilter, WsPipe } from '@/modules/core/providers';
 
 import { PermissionAction } from '@/modules/rbac/constants';
 import { Permission } from '@/modules/rbac/decorators';

@@ -2,16 +2,17 @@ import { Controller, Get, Query, SerializeOptions } from '@nestjs/common';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+import { simpleCurdOption } from '@/modules/rbac/helpers';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 
 import { Crud, Depends } from '@/modules/restful/decorators';
 
-import { createHookOption } from '@/modules/restful/helpers';
+import { ListWithTrashedQueryDto } from '@/modules/restful/dtos';
+import { Guest } from '@/modules/user/decorators';
 
 import { ContentModule } from '../content.module';
 import { QueryCategoryTreeDto } from '../dtos';
 
-import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/category.dto';
 import { CategoryService } from '../services';
 
 @ApiTags('分类')
@@ -21,32 +22,12 @@ import { CategoryService } from '../services';
     enabled: [
         {
             name: 'list',
-            option: createHookOption('分类查询,以分页模式展示'),
+            option: simpleCurdOption(undefined, '分类查询,以分页模式展示', true),
         },
-        {
-            name: 'detail',
-            option: createHookOption('分类详情'),
-        },
-        {
-            name: 'store',
-            option: createHookOption('创建分类'),
-        },
-        {
-            name: 'update',
-            option: createHookOption('更新分类'),
-        },
-        {
-            name: 'delete',
-            option: createHookOption('删除分类'),
-        },
-        {
-            name: 'restore',
-            option: createHookOption('恢复分类'),
-        },
+        { name: 'detail', option: simpleCurdOption(undefined, '分类详情', true) },
     ],
     dtos: {
-        store: CreateCategoryDto,
-        update: UpdateCategoryDto,
+        list: ListWithTrashedQueryDto,
     },
 }))
 @Controller('categories')
@@ -57,6 +38,7 @@ export class CategoryController extends BaseControllerWithTrash<CategoryService>
 
     @Get('tree')
     @ApiOperation({ summary: '树形结构分类查询' })
+    @Guest()
     @SerializeOptions({ groups: ['category-tree'] })
     async tree(@Query() options: QueryCategoryTreeDto) {
         return this.service.findTrees(options);

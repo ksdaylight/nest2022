@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional, PickType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, OmitType, PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsDefined, IsNotEmpty, IsOptional, IsUUID, MaxLength, ValidateIf } from 'class-validator';
 
@@ -7,13 +7,25 @@ import { IsDataExist } from '@/modules/database/constraints';
 
 import { ListQueryDto } from '@/modules/restful/dtos';
 
+import { UserEntity } from '@/modules/user/entities';
+
 import { CommentEntity, PostEntity } from '../entities';
 
 /**
  * 评论分页查询验证
  */
 @DtoValidation({ type: 'query' })
-export class QueryCommentDto extends ListQueryDto {
+export class ManageQueryCommentDto extends ListQueryDto {
+    @ApiPropertyOptional({
+        description: '评论发布者ID:根据传入评论发布者的ID对评论进行过滤',
+    })
+    @IsDataExist(UserEntity, {
+        message: '所属的用户不存在',
+    })
+    @IsUUID(undefined, { message: '用户ID格式错误' })
+    @IsOptional()
+    user?: string;
+
     @ApiPropertyOptional({
         description: '评论所属文章ID:根据传入评论所属文章的ID对评论进行过滤',
     })
@@ -24,6 +36,12 @@ export class QueryCommentDto extends ListQueryDto {
     @IsOptional()
     post?: string;
 }
+
+/**
+ * 评论列表分页查询验证
+ */
+@DtoValidation({ type: 'query' })
+export class QueryCommentDto extends OmitType(ManageQueryCommentDto, ['user']) {}
 
 /**
  * 评论树查询
