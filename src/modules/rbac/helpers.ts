@@ -69,3 +69,50 @@ export const simpleCurdOption = (
         }
     },
 });
+
+// export function simpleCurdOption(apiSummary: string): CrudMethodOption;
+
+// export function simpleCurdOption(
+//     permissions: PermissionChecker[],
+//     apiSummary?: string,
+//     apiBearerAuth?: boolean,
+// ): CrudMethodOption;
+
+// export function simpleCurdOption(
+//     permissionsOrApiSummary: PermissionChecker[] | string,
+//     apiSummary?: string,
+//     guest?: boolean,
+//     apiBearerAuth?: boolean,
+// ): CrudMethodOption {
+//     let permissions: PermissionChecker[] = [];
+//     let mtheodSummary = '';
+//     if (typeof permissionsOrApiSummary === 'string') {
+//         mtheodSummary = permissionsOrApiSummary;
+//     } else {
+//         permissions = permissionsOrApiSummary;
+//         mtheodSummary = apiSummary;
+//     }
+
+//     return {
+//         allowGuest: guest ?? false,
+//         hook: (target, method) => {
+//             if (permissions.length > 0) {
+//                 ManualPermission(target, method, permissions);
+//             }
+//             if (mtheodSummary) {
+//                 ApiOperation({ summary: mtheodSummary })(
+//                     target,
+//                     method,
+//                     Object.getOwnPropertyDescriptor(target.prototype, method),
+//                 );
+//             }
+//             if (apiBearerAuth) {
+//                 ApiBearerAuth()(
+//                     target,
+//                     method,
+//                     Object.getOwnPropertyDescriptor(target.prototype, method),
+//                 );
+//             }
+//         },
+//     };
+// }

@@ -1,56 +1,98 @@
-import { Controller, Get, Query, SerializeOptions } from '@nestjs/common';
+import {
+    Get,
+    Body,
+    Controller,
+    Delete,
+    Param,
+    ParseUUIDPipe,
+    Post,
+    SerializeOptions,
+    Query,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { In } from 'typeorm';
+import { ClassToPlain } from 'typings/global';
 
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PermissionAction } from '@/modules/rbac/constants';
+import { Permission } from '@/modules/rbac/decorators/permission.decorator';
+import { checkOwner } from '@/modules/rbac/helpers';
+import { PermissionChecker } from '@/modules/rbac/types';
+import { Depends } from '@/modules/restful/decorators';
+import { DeleteDto } from '@/modules/restful/dtos';
 
-import { BaseController } from '@/modules/restful/base';
-import { Crud, Depends } from '@/modules/restful/decorators';
-
-import { createHookOption } from '@/modules/restful/helpers';
+import { Guest, ReqUser } from '@/modules/user/decorators';
+import { UserEntity } from '@/modules/user/entities';
 
 import { ContentModule } from '../content.module';
-import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from '../dtos';
+import { CreateCommentDto, QueryCommentDto } from '../dtos';
+import { CommentEntity } from '../entities';
+import { CommentRepository } from '../repositories';
 import { CommentService } from '../services';
 
-@ApiTags('评论')
+const checkers: Record<'create' | 'owner', PermissionChecker> = {
+    create: async (ab) => ab.can(PermissionAction.CREATE, CommentEntity.name),
+    owner: async (ab, ref, request) =>
+        checkOwner(
+            ab,
+            async (items) =>
+                ref.get(CommentRepository, { strict: false }).find({
+                    relations: ['user'],
+                    where: { id: In(items) },
+                }),
+            request,
+        ),
+};
+/**
+ * 评论控制器
+ */
+@ApiTags('评论操作')
 @Depends(ContentModule)
-@Crud(async () => ({
-    id: 'comment',
-    enabled: [
-        {
-            name: 'list',
-            option: createHookOption('评论查询,以分页模式展示'),
-        },
-        {
-            name: 'detail',
-            option: createHookOption('评论详情'),
-        },
-        {
-            name: 'store',
-            option: createHookOption('添加评论'),
-        },
-        {
-            name: 'delete',
-            option: createHookOption('删除评论'),
-        },
-    ],
-    dtos: {
-        store: CreateCommentDto,
-        list: QueryCommentDto,
-    },
-}))
 @Controller('comments')
-export class CommentController extends BaseController<CommentService> {
-    constructor(protected service: CommentService) {
-        super(service);
+export class CommentController {
+    constructor(protected commentService: CommentService) {}
+
+    @Guest()
+    @Get('tree/:post')
+    @ApiOperation({ summary: '查询一篇文章的评论,以树形嵌套结构展示' })
+    @SerializeOptions({})
+    async index(@Param('post', new ParseUUIDPipe()) post: string) {
+        return this.commentService.findTrees({ post });
     }
 
-    @Get('tree')
-    @ApiOperation({ summary: '树形结构评论查询' })
-    @SerializeOptions({ groups: ['comment-tree'] })
-    async tree(
+    /**
+     * @description 显示评论树
+     */
+    @Guest()
+    @Get()
+    @ApiOperation({ summary: '查询一篇文章的评论,以分页模式展示' })
+    @SerializeOptions({})
+    async list(
         @Query()
-        query: QueryCommentTreeDto,
+        query: QueryCommentDto,
     ) {
-        return this.service.findTrees(query);
+        return this.commentService.paginate(query);
+    }
+
+    @Post()
+    @ApiBearerAuth()
+    @ApiOperation({ summary: '评论一篇文章' })
+    @Permission(checkers.create)
+    async store(
+        @Body()
+        data: CreateCommentDto,
+        @ReqUser() user: ClassToPlain<UserEntity>,
+    ) {
+        return this.commentService.create(data, user);
+    }
+
+    @Delete()
+    @ApiBearerAuth()
+    @ApiOperation({ summary: '删除多条自己发布的评论' })
+    @Permission(checkers.owner)
+    async delete(
+        @Body()
+        { ids }: DeleteDto,
+    ) {
+        return this.commentService.delete(ids);
     }
 }

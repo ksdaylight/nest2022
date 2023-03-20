@@ -1,12 +1,13 @@
-import { Get, Body, Controller, Delete, SerializeOptions, Query } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PermissionAction } from '@/modules/rbac/constants';
-import { Permission } from '@/modules/rbac/decorators/permission.decorator';
+import { simpleCurdOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 
-import { Depends } from '@/modules/restful/decorators';
+import { BaseController } from '@/modules/restful/base';
+import { Crud, Depends } from '@/modules/restful/decorators';
 import { DeleteDto } from '@/modules/restful/dtos';
 
 import { ContentModule } from '../../content.module';
@@ -14,7 +15,7 @@ import { ManageQueryCommentDto } from '../../dtos';
 import { CommentEntity } from '../../entities/comment.entity';
 import { CommentService } from '../../services';
 
-const checkes: PermissionChecker[] = [
+const permissions: PermissionChecker[] = [
     async (ab) => ab.can(PermissionAction.MANAGE, CommentEntity.name),
 ];
 /**
@@ -23,31 +24,23 @@ const checkes: PermissionChecker[] = [
 @ApiTags('评论管理')
 @ApiBearerAuth()
 @Depends(ContentModule)
+@Crud(async () => ({
+    id: 'commentManage',
+    enabled: [
+        {
+            name: 'list',
+            option: simpleCurdOption(permissions, '查询评论列表'),
+        },
+        { name: 'delete', option: simpleCurdOption(permissions, '删除评论,支持批量删除') },
+    ],
+    dtos: {
+        list: ManageQueryCommentDto,
+        delete: DeleteDto,
+    },
+}))
 @Controller('comments')
-export class CommentManageController {
-    constructor(protected commentService: CommentService) {}
-
-    /**
-     * @description 显示评论树
-     */
-    @Get()
-    @ApiOperation({ summary: '查询评论列表' })
-    @Permission(...checkes)
-    @SerializeOptions({})
-    async list(
-        @Query()
-        query: ManageQueryCommentDto,
-    ) {
-        return this.commentService.paginate(query);
-    }
-
-    @Delete(':comment')
-    @ApiOperation({ summary: '删除评论,支持批量删除' })
-    @Permission(...checkes)
-    async delete(
-        @Body()
-        { ids }: DeleteDto,
-    ) {
-        return this.commentService.delete(ids);
+export class CommentManageController extends BaseController<CommentService> {
+    constructor(protected commentService: CommentService) {
+        super(commentService);
     }
 }
