@@ -12,11 +12,12 @@ export class PostRepository extends BaseRepository<PostEntity> {
     buildBaseQB(): SelectQueryBuilder<PostEntity> {
         return this.createQueryBuilder(this.qbName)
             .leftJoinAndSelect(`${this.qbName}.categories`, 'categories')
+            .leftJoinAndSelect(`${this.qbName}.author`, 'author')
             .addSelect((subQuery) => {
                 return subQuery
                     .select('COUNT(c.id)')
                     .from(CommentEntity, 'c')
-                    .where('c.post.id = post.id');
+                    .where(`c.${this.qbName}.id = ${this.qbName}.id`);
             }, 'commentCount')
             .loadRelationCountAndMap(`${this.qbName}.commentCount`, `${this.qbName}.comments`);
     }

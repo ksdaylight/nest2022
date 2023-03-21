@@ -89,7 +89,7 @@ export class MessageController {
         @Param('item', new ParseUUIDPipe())
         item: string,
     ) {
-        return this.messageService.detail(item, false);
+        return this.messageService.detail(item);
     }
 
     /**

@@ -2,8 +2,8 @@ import { exit } from 'process';
 
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
+import { WsAdapter } from '@nestjs/platform-ws';
 import { useContainer } from 'class-validator';
-
 import { isNil } from 'lodash';
 
 import { Restful } from '../restful/restful';
@@ -66,6 +66,34 @@ export class App {
                 configure: this._configure,
                 BootModule,
             });
+            // 是否启用websockets服务
+            if (await this._configure.get<boolean>('app.websockets')) {
+                this._app.useWebSocketAdapter(new WsAdapter(this._app));
+            }
+
+            if (this._app.getHttpAdapter() instanceof FastifyAdapter) {
+                // 启用文件上传服务
+                // eslint-disable-next-line global-require
+                this._app.register(require('@fastify/multipart'), {
+                    attachFieldsToBody: true,
+                });
+                const fastifyInstance = this._app.getHttpAdapter().getInstance();
+                fastifyInstance.addHook(
+                    'onRequest',
+                    (request: any, reply: any, done: (...args: any[]) => any) => {
+                        // eslint-disable-next-line func-names
+                        reply.setHeader = function (key: string, value: any) {
+                            return this.raw.setHeader(key, value);
+                        };
+                        // eslint-disable-next-line func-names
+                        reply.end = function () {
+                            this.raw.end();
+                        };
+                        request.res = reply;
+                        done();
+                    },
+                );
+            }
             if (!isNil(await this._configure.get<ApiConfig>('api', null))) {
                 const restful = this._app.get(Restful);
                 restful.factoryDocs(this._app);

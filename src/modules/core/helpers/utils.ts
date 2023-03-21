@@ -96,7 +96,7 @@ export const deepMerge = <T1, T2>(
     return deepmerge(x, y, options) as T2 extends T1 ? T1 : T1 & T2;
 };
 
-export function mergerMeta(meta: ModuleMetadata, custom: ModuleMetadata) {
+export function mergeMeta(meta: ModuleMetadata, custom: ModuleMetadata) {
     const keys = Array.from(new Set([...Object.keys(meta), ...Object.keys(custom)]));
     const useMerge = <T>(i: T, p: T) => {
         if (isArray(p)) return [...((i as any[]) ?? []), ...((p as any[]) ?? [])];

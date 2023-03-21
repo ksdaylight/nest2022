@@ -1,6 +1,7 @@
 /// config system
 
 import { ModuleMetadata, PipeTransform, Type } from '@nestjs/common';
+import { IAuthGuard } from '@nestjs/passport';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import dayjs from 'dayjs';
 import { Ora } from 'ora';
@@ -68,6 +69,7 @@ export interface CreateOptions {
         pipe?: (params: AppParams) => PipeTransform<any> | null;
         interceptor?: Type<any> | null;
         filter?: Type<any> | null;
+        guard?: Type<IAuthGuard>;
     };
     configure?: ConfigStorageOption;
     modules?: ModuleItem[];

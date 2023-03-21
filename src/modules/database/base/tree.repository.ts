@@ -227,7 +227,7 @@ export class BaseTreeRepository<E extends ObjectLiteral> extends TreeRepository<
         return qb.getCount();
     }
 
-    async toFlatTress(trees: E[], depth = 0, parent: E | null = null): Promise<E[]> {
+    async toFlatTrees(trees: E[], depth = 0, parent: E | null = null): Promise<E[]> {
         const data: Omit<E, 'children'>[] = [];
         for (const item of trees) {
             (item as any).depth = depth;
@@ -235,7 +235,7 @@ export class BaseTreeRepository<E extends ObjectLiteral> extends TreeRepository<
             const { children } = item;
             unset(item, 'children');
             data.push(item);
-            data.push(...(await this.toFlatTress(children, depth + 1, item)));
+            data.push(...(await this.toFlatTrees(children, depth + 1, item)));
         }
         return data as E[];
     }

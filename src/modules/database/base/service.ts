@@ -77,7 +77,7 @@ export abstract class BaseService<
                 (trashed === SelectTrashMode.ALL || trashed === SelectTrashMode.ONLY);
             const onlyTrashed = this.enableTrash && trashed === SelectTrashMode.ONLY;
             const tree = await this.repository.findTrees({ ...options, withTrashed, onlyTrashed });
-            return this.repository.toFlatTress(tree);
+            return this.repository.toFlatTrees(tree);
         }
         const qb = await this.buildListQB(this.repository.buildBaseQB(), options, callback);
         return qb.getMany();

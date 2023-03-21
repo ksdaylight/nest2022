@@ -27,7 +27,7 @@ export class SearchService {
         return this.esSearvice.index<PostSearchBody>({
             index: this.index,
             document: {
-                ...pick(instanceToPlain(post), ['id', 'title', 'body', 'summary']),
+                ...pick(instanceToPlain(post), ['id', 'title', 'body', 'author', 'summary']),
                 categories: (post.categories ?? []).join(','),
             },
         });
@@ -35,7 +35,7 @@ export class SearchService {
 
     async update(post: PostEntity) {
         const newBody: PostSearchBody = {
-            ...pick(instanceToPlain(post), ['title', 'body', 'summary']),
+            ...pick(instanceToPlain(post), ['title', 'body', 'author', 'summary']),
             categories: (post.categories ?? []).join(','),
         };
         const script = Object.entries(newBody).reduce(

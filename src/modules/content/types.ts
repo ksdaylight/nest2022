@@ -1,4 +1,5 @@
 import { ClassToPlain } from 'typings/global';
+
 import { PostBodyType } from './constants';
 import { PostEntity } from './entities';
 
@@ -9,5 +10,5 @@ export type PostSearchBody = Pick<ClassToPlain<PostEntity>, 'title' | 'body' | '
 export interface ContentConfig {
     searchType: SearchType;
 }
-}
+
 export type PostTypeOption = `${PostBodyType}` | 'all';

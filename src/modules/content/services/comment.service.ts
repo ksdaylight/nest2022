@@ -2,16 +2,30 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { isNil } from 'lodash';
 import { EntityNotFoundError, SelectQueryBuilder } from 'typeorm';
 
+import { ClassToPlain } from 'typings/global';
+
 import { BaseService } from '@/modules/database/base';
 
-import { CreateCommentDto, QueryCommentDto, QueryCommentTreeDto } from '../dtos';
+import { UserEntity } from '@/modules/user/entities';
+import { UserService } from '@/modules/user/services';
+
+import {
+    CreateCommentDto,
+    ManageQueryCommentDto,
+    QueryCommentDto,
+    QueryCommentTreeDto,
+} from '../dtos';
 
 import { CommentEntity } from '../entities';
 import { CommentRepository, PostRepository } from '../repositories';
 
 @Injectable()
 export class CommentService extends BaseService<CommentEntity, CommentRepository> {
-    constructor(protected repository: CommentRepository, protected postRepository: PostRepository) {
+    constructor(
+        protected repository: CommentRepository,
+        protected postRepository: PostRepository,
+        protected userService: UserService,
+    ) {
         super(repository);
     }
 
@@ -23,11 +37,12 @@ export class CommentService extends BaseService<CommentEntity, CommentRepository
         });
     }
 
-    async paginate(options: QueryCommentDto) {
-        const { post } = options;
+    async paginate(options: ManageQueryCommentDto | QueryCommentDto) {
+        const { post, user } = options as ManageQueryCommentDto;
         const addQuery = async (qb: SelectQueryBuilder<CommentEntity>) => {
             const condition: Record<string, string> = {};
             if (isNil(post)) condition.post = post;
+            if (!isNil(user)) condition.user = user;
             return Object.keys(condition).length > 0 ? qb.andWhere(condition) : qb;
         };
         return super.paginate({
@@ -36,7 +51,7 @@ export class CommentService extends BaseService<CommentEntity, CommentRepository
         });
     }
 
-    async create(data: CreateCommentDto) {
+    async create(data: CreateCommentDto, user: ClassToPlain<UserEntity>) {
         const parent = await this.getParent(undefined, data.parent);
         if (!isNil(parent) && parent.post.id !== data.post) {
             throw new ForbiddenException('Parent comment and child comment must belong same post!');
@@ -45,6 +60,7 @@ export class CommentService extends BaseService<CommentEntity, CommentRepository
             ...data,
             parent,
             post: await this.getPost(data.post),
+            user: await this.userService.getCurrentUser(user),
         });
         return this.repository.findOneOrFail({ where: { id: item.id } });
     }

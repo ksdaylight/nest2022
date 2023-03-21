@@ -4,13 +4,28 @@ import { isArray, isFunction, isNil, omit } from 'lodash';
 
 import { EntityNotFoundError, In, IsNull, Not, SelectQueryBuilder } from 'typeorm';
 
+import { ClassToPlain } from 'typings/global';
+
 import { BaseService } from '@/modules/database/base';
 
 import { manualPaginate, paginate } from '@/modules/database/helpers';
 import { QueryHook, PaginateReturn } from '@/modules/database/types';
 
+import { UserEntity } from '@/modules/user/entities';
+import { UserService } from '@/modules/user/services';
+
 import { PostOrderType } from '../constants';
-import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
+import {
+    CreatePostDto,
+    CreatePostWithOutTypeDto,
+    ManageCreatePostDto,
+    ManageCreatePostWithOutTypeDto,
+    ManageUpdatePostDto,
+    ManageUpdatePostWithOutTypeDto,
+    QueryPostDto,
+    UpdatePostDto,
+    UpdatePostWithOutTypeDto,
+} from '../dtos';
 
 import { PostEntity } from '../entities';
 import { CategoryRepository, PostRepository } from '../repositories';
@@ -30,6 +45,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         protected repository: PostRepository,
         protected categoryRepository: CategoryRepository,
         protected categoryService: CategoryService,
+        protected userService: UserService,
         protected searchService?: SearchService,
         protected search_type: SearchType = 'against',
     ) {
@@ -65,9 +81,19 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         return item;
     }
 
-    async crate(data: CreatePostDto) {
+    async create({
+        author,
+        ...data
+    }:
+        | (CreatePostDto & { author: string })
+        | (CreatePostWithOutTypeDto & { author: string })
+        | ManageCreatePostDto
+        | ManageCreatePostWithOutTypeDto) {
         const createPostDto = {
             ...data,
+            author: await this.userService.getCurrentUser({
+                id: author,
+            } as ClassToPlain<UserEntity>),
             categories: isArray(data.categories)
                 ? await this.categoryRepository.findBy({
                       id: In(data.categories),
@@ -85,7 +111,13 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         return this.detail(item.id);
     }
 
-    async update(data: UpdatePostDto) {
+    async update(
+        data:
+            | UpdatePostDto
+            | UpdatePostWithOutTypeDto
+            | ManageUpdatePostDto
+            | ManageUpdatePostWithOutTypeDto,
+    ) {
         const post = await this.detail(data.id);
         if (isArray(data.categories)) {
             await this.repository
@@ -192,6 +224,8 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
                 return qb.orderBy('commentCount', 'DESC');
             case PostOrderType.CUSTOM:
                 return qb.orderBy('customOrder', 'DESC');
+            case PostOrderType.USERCUSTOM:
+                return qb.orderBy('userOrder', 'DESC');
             default:
                 return qb
                     .orderBy('post.createdAt', 'DESC')
@@ -204,7 +238,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
     protected async queryByCategory(id: string, qb: SelectQueryBuilder<PostEntity>) {
         const root = await this.categoryService.detail(id);
         const tree = await this.categoryRepository.findDescendantsTree(root);
-        const flatDes = await this.categoryRepository.toFlatTress(tree.children);
+        const flatDes = await this.categoryRepository.toFlatTrees(tree.children);
         const ids = [tree.id, ...flatDes.map((item) => item.id)];
         return qb.where('categories.id IN (:...ids)', {
             ids,

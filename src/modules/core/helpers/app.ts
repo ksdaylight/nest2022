@@ -1,5 +1,5 @@
 import { Global, Module, ModuleMetadata, Type } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import chalk from 'chalk';
 import { isNil, omit } from 'lodash';
 
@@ -7,8 +7,10 @@ import yargs, { CommandModule } from 'yargs';
 
 import { DatabaseModule } from '@/modules/database/database.module';
 import { ElasticModule } from '@/modules/elastic/elastic.module';
-
+import { QueueModule } from '@/modules/queue/queue.module';
+import { RedisModule } from '@/modules/redis/redis.module';
 import { RestfulModule } from '@/modules/restful/restful.module';
+import { SenderModule } from '@/modules/sender/sender.module';
 
 import { App } from '../app';
 import { Configure } from '../configure';
@@ -28,7 +30,7 @@ import {
     ModuleOption,
 } from '../types';
 
-import { CreateModule, isAsyncFn, mergerMeta } from './utils';
+import { CreateModule, isAsyncFn, mergeMeta } from './utils';
 
 async function getModuleMeta(configure: Configure, option: ModuleOption) {
     let metadata: ModuleBuilderMeta = {};
@@ -66,6 +68,11 @@ export async function createBootModule(
     if (configure.has('database')) importModules.push(DatabaseModule);
     if (configure.has('elastic')) importModules.push(ElasticModule);
     if (configure.has('api')) importModules.push(RestfulModule);
+    if (configure.has('sms') || configure.has('smtp')) importModules.push(SenderModule);
+    if (configure.has('redis')) {
+        importModules.push(RedisModule);
+        if (configure.has('queue')) importModules.push(QueueModule);
+    }
     const moduleMaps = await createImportModules(configure, importModules);
     const imports: ModuleMetadata[`imports`] = Object.values(moduleMaps).map((m) => m.module);
     const providers: ModuleMetadata['providers'] = [];
@@ -94,6 +101,12 @@ export async function createBootModule(
             useClass: AppFilter,
         });
     }
+    if (!isNil(globals.guard)) {
+        providers.push({
+            provide: APP_GUARD,
+            useClass: globals.guard,
+        });
+    }
     return {
         BootModule: CreateModule('BootModule', () => {
             let meta: ModuleMetadata = {
@@ -101,7 +114,7 @@ export async function createBootModule(
                 providers,
             };
             if (bootMeta) {
-                meta = mergerMeta(meta, bootMeta(params));
+                meta = mergeMeta(meta, bootMeta(params));
             }
             return meta;
         }),
