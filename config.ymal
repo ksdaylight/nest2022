@@ -1,0 +1,18 @@
+{
+    "sms": {
+        "sign": "your-sign",
+        "region": "ap-guangzhou",
+        "appid": "your-app-id",
+        "secretId": "your-secret-id",
+        "secretKey": "your-secret-key"
+    },
+    "smtp": {
+        "host": "your-smtp-host",
+        "user": "your-smtp-username",
+        "password": "your-smtp-password",
+        "secure": false,
+        "from": "your-smtp-username",
+        "resource": "/home/milo/Code/fullstackpractice0/dist/assets/emails",
+        "port": 25
+    }
+}

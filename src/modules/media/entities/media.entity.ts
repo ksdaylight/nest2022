@@ -11,6 +11,8 @@ import { UserEntity } from '@/modules/user/entities';
 @Entity('storage_medias')
 @AddRelations(async () => App.configure.get<DynamicRelation[]>('media.relations', []))
 export class MediaEntity extends BaseEntity {
+    [key: string]: any;
+
     @Column({ comment: '文件存储位置' })
     file: string;
 

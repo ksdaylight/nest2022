@@ -10,5 +10,6 @@ import { ModuleBuilder } from './decorators';
             useValue: configure,
         },
     ],
+    exports: [Configure],
 }))
 export class CoreModule {}

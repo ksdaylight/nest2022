@@ -25,7 +25,7 @@ import { createConnectionOptions } from '../core/helpers/options';
 
 import { ConfigureFactory, ConfigureRegister } from '../core/types';
 
-import { CUSTOM_REPOSITORY_METADATA } from './constants';
+import { ADDTIONAL_RELATIONS, CUSTOM_REPOSITORY_METADATA } from './constants';
 
 import { FactoryResolver } from './resolver';
 import {
@@ -41,6 +41,7 @@ import {
     TypeormOption,
     Seeder,
     FactoryOptions,
+    DynamicRelation,
 } from './types';
 
 export const getOrderByQuery = <E extends ObjectLiteral>(
@@ -189,60 +190,102 @@ export const createDbOptions = (configure: Configure, options: DbConfigOptions) 
 };
 
 /** ****************************** 类注册及读取 **************************** */
-// export const addEntities = async (
-//     configure: Configure,
-//     entities: EntityClassOrSchema[] = [],
-//     dataSource = 'default',
-// ) => {
-//     const database = await configure.get<DbConfig>('database');
-//     if (isNil(database)) throw new Error(`Typeorm have not any config!`);
-//     const dbConfig = database.connections.find(({ name }) => name === dataSource);
-//     if (isNil(dbConfig)) throw new Error(`Database connection named ${dataSource} not exists!`);
-//     const oldEntities = (dbConfig.entities ?? []) as ObjectLiteral[];
+/**
+ * 在模块上注册entity
+ * @param configure 配置类实例
+ * @param entities entity类列表
+ * @param dataSource 数据连接名称,默认为default
+ */
+export const addEntities = async (
+    configure: Configure,
+    entities: EntityClassOrSchema[] = [],
+    dataSource = 'default',
+) => {
+    const database = await configure.get<DbConfig>('database');
+    if (isNil(database)) throw new Error(`Typeorm have not any config!`);
+    const dbConfig = database.connections.find(({ name }) => name === dataSource);
+    // eslint-disable-next-line prettier/prettier, prefer-template
+    if (isNil(dbConfig)) throw new Error(`Database connection named ${dataSource} not exists!`);
+    const oldEntities = (dbConfig.entities ?? []) as ObjectLiteral[];
+    /**
+     * 为有动态关联的entity添加动态关联
+     */
+    const es = await Promise.all(
+        entities.map(async (e) => {
+            const relationsRegister = Reflect.getMetadata(ADDTIONAL_RELATIONS, e);
+            if ('prototype' in e && relationsRegister && typeof relationsRegister === 'function') {
+                const relations: DynamicRelation[] = await relationsRegister();
+                relations.forEach(({ column, relation, others }) => {
+                    const cProperty = Object.getOwnPropertyDescriptor(e.prototype, column);
+                    if (!cProperty) {
+                        Object.defineProperty(e.prototype, column, {
+                            writable: true,
+                        });
+                        relation(e.prototype, column);
+                        if (!isNil(others)) {
+                            for (const other of others) {
+                                other(e.prototype, column);
+                            }
+                        }
+                    }
+                });
+            }
+            return e;
+        }),
+    );
+    /**
+     * 更新数据库配置,添加上新的模型
+     */
+    configure.set(
+        'database.connections',
+        database.connections.map((connection) =>
+            connection.name === dataSource
+                ? {
+                      ...connection,
+                      entities: [...es, ...oldEntities],
+                  }
+                : connection,
+        ),
+    );
+    return TypeOrmModule.forFeature(es, dataSource);
+};
 
-//     configure.set(
-//         'database.connections',
-//         database.connections.map((connection) =>
-//             connection.name === dataSource
-//                 ? {
-//                       ...connection,
-//                       entities: [...entities, ...oldEntities],
-//                   }
-//                 : connection,
-//         ),
-//     );
-//     return TypeOrmModule.forFeature(entities, dataSource);
-// };
+/**
+ * 在模块上注册订阅者
+ * @param configure 配置类实例
+ * @param subscribers 订阅者列表
+ * @param dataSource 数据库连接名称
+ */
+export const addSubscribers = async (
+    configure: Configure,
+    subscribers: Type<any>[] = [],
+    dataSource = 'default',
+) => {
+    const database = await configure.get<DbConfig>('database');
+    if (isNil(database)) throw new Error(`Typeorm have not any config!`);
+    const dbConfig = database.connections.find(({ name }) => name === dataSource);
+    // eslint-disable-next-line prettier/prettier, prefer-template
+    if (isNil(dbConfig)) throw new Error('Database connection named' + dataSource + 'not exists!');
 
-// export const addSubscribers = async (
-//     configure: Configure,
-//     subscribers: Type<any>[] = [],
-//     dataSource = 'default',
-// ) => {
-//     const database = await configure.get<DbConfig>('database');
-//     if (isNil(database)) throw new Error(`Typeorm have not any config!`);
-//     const dbConfig = database.connections.find(({ name }) => name === dataSource);
-//     // eslint-disable-next-line prettier/prettier, prefer-template
-//     if (isNil(dbConfig)) throw new Error('Database connection named' + dataSource + 'not exists!');
+    const oldSubscribers = (dbConfig.subscribers ?? []) as any[];
 
-//     const oldSubscribers = (dbConfig.subscribers ?? []) as any[];
+    /**
+     * 更新数据库配置,添加上新的订阅者
+     */
+    configure.set(
+        'database.connections',
+        database.connections.map((connection) =>
+            connection.name === dataSource
+                ? {
+                      ...connection,
+                      subscribers: [...oldSubscribers, ...subscribers],
+                  }
+                : connection,
+        ),
+    );
+    return subscribers;
+};
 
-//     /**
-//      * 更新数据库配置,添加上新的订阅者
-//      */
-//     configure.set(
-//         'database.connections',
-//         database.connections.map((connection) =>
-//             connection.name === dataSource
-//                 ? {
-//                       ...connection,
-//                       subscribers: [...oldSubscribers, ...subscribers],
-//                   }
-//                 : connection,
-//         ),
-//     );
-//     return subscribers;
-// };
 export const updateDbConfig = async (
     configure: Configure,
     dataSource = 'default',
@@ -281,25 +324,25 @@ export const updateDbConfig = async (
     };
 };
 
-export const addEntities = async (
-    configure: Configure,
-    entities: EntityClassOrSchema[] = [],
-    dataSource = 'default',
-) => {
-    const { modules } = await updateDbConfig(configure, dataSource, entities);
+// export const addEntities = async (
+//     configure: Configure,
+//     entities: EntityClassOrSchema[] = [],
+//     dataSource = 'default',
+// ) => {
+//     const { modules } = await updateDbConfig(configure, dataSource, entities);
 
-    return modules;
-};
+//     return modules;
+// };
 
-export const addSubscribers = async (
-    configure: Configure,
-    subscribers: Type<any>[] = [],
-    dataSource = 'default',
-) => {
-    const { subscribersList } = await updateDbConfig(configure, dataSource, [], subscribers);
+// export const addSubscribers = async (
+//     configure: Configure,
+//     subscribers: Type<any>[] = [],
+//     dataSource = 'default',
+// ) => {
+//     const { subscribersList } = await updateDbConfig(configure, dataSource, [], subscribers);
 
-    return subscribersList;
-};
+//     return subscribersList;
+// };
 
 export async function getDbConfig(cname = 'default') {
     const { connections = [] }: DbConfig = await App.configure.get<DbConfig>('database');

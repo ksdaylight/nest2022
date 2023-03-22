@@ -40,7 +40,9 @@ export const registerCrud = async <T extends BaseController<any>>(
         }
         const descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
 
-        const [, ...params] = Reflect.getMetadata('design:paramtypes', Target.prototype, name);
+        // eslint-disable-next-line @typescript-eslint/naming-convention, unused-imports/no-unused-vars
+        const [_, ...params] = Reflect.getMetadata('design:paramtypes', Target.prototype, name);
+
         if (name === 'store' && !isNil(dtos.store)) {
             Reflect.defineMetadata(
                 'design:paramtypes',
