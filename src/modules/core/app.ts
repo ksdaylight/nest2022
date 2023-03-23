@@ -107,8 +107,7 @@ export class App {
                 await this._app.init();
             }
         } catch (error) {
-            panic({ message: 'Database config not exists or not right!' });
-
+            panic({ message: 'Create app failed!', error });
             exit(0);
         }
         return { configure: this._configure, app: this._app, modules, commands };

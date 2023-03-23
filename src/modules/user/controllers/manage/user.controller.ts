@@ -3,9 +3,9 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PermissionAction } from '@/modules/rbac/constants';
-import { simpleCurdOption } from '@/modules/rbac/helpers';
+import { simpleCrudOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
-import { BaseController } from '@/modules/restful/base';
+import { BaseControllerWithTrash } from '@/modules/restful/base';
 import { Crud, Depends } from '@/modules/restful/decorators';
 
 import { CreateUserDto, QueryUserDto, UpdateUserDto } from '../../dtos';
@@ -25,20 +25,20 @@ const permissions: PermissionChecker[] = [
 @Crud(() => ({
     id: 'user',
     enabled: [
-        { name: 'list', option: simpleCurdOption(permissions, '用户查询,以分页模式展示') },
-        { name: 'detail', option: simpleCurdOption(permissions, '用户详情') },
-        { name: 'store', option: simpleCurdOption(permissions, '新增用户') },
-        { name: 'update', option: simpleCurdOption(permissions, '修改用户信息') },
+        { name: 'list', option: simpleCrudOption(permissions, '用户查询,以分页模式展示') },
+        { name: 'detail', option: simpleCrudOption(permissions, '用户详情') },
+        { name: 'store', option: simpleCrudOption(permissions, '新增用户') },
+        { name: 'update', option: simpleCrudOption(permissions, '修改用户信息') },
         {
             name: 'delete',
-            option: simpleCurdOption(
+            option: simpleCrudOption(
                 permissions,
                 '删除用户,支持批量删除(初始化超级管理员用户不可删除)',
             ),
         },
         {
             name: 'restore',
-            option: simpleCurdOption(permissions, '恢复回收站中的用户,支持批量恢复'),
+            option: simpleCrudOption(permissions, '恢复回收站中的用户,支持批量恢复'),
         },
     ],
     dtos: {
@@ -48,7 +48,7 @@ const permissions: PermissionChecker[] = [
     },
 }))
 @Controller('users')
-export class UserManageController extends BaseController<UserService> {
+export class UserManageController extends BaseControllerWithTrash<UserService> {
     constructor(protected userService: UserService) {
         super(userService);
     }

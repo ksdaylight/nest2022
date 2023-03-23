@@ -13,6 +13,7 @@ import {
     ApiSwaggerOption,
     ApiVersionOption,
 } from './types';
+
 @Injectable()
 export class Restful extends RouterConfigure {
     protected _docs!: {

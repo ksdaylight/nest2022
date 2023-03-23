@@ -1,3 +1,5 @@
+// import util from 'util';
+
 import { Delete, Get, Patch, Post, SerializeOptions, Type } from '@nestjs/common';
 import { ApiBody, ApiQuery } from '@nestjs/swagger';
 import { ClassTransformOptions } from 'class-transformer';
@@ -24,6 +26,8 @@ export const registerCrud = async <T extends BaseController<any>>(
             continue;
         methods.push(item);
     }
+    // console.log('\n');
+    // console.dir(options);
     for (const { name, option = {} } of methods) {
         if (isNil(Object.getOwnPropertyDescriptor(Target.prototype, name))) {
             const descriptor =
@@ -38,8 +42,25 @@ export const registerCrud = async <T extends BaseController<any>>(
                 },
             });
         }
-        const descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
+        // const baseDescriptor =
+        //     Target instanceof BaseControllerWithTrash
+        //         ? Object.getOwnPropertyDescriptor(BaseControllerWithTrash.prototype, name)
+        //         : Object.getOwnPropertyDescriptor(BaseController.prototype, name);
 
+        // if (!isNil(baseDescriptor)) {
+        //     let descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
+        //     descriptor = isNil(descriptor) ? baseDescriptor : descriptor;
+        //     Object.defineProperty(Target.prototype, name, {
+        //         ...descriptor,
+        //         async value(...args: any[]) {
+        //             return descriptor.value.apply(this, args);
+        //         },
+        //     });
+        // }
+
+        const descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
+        // console.log(`\n start ${name} of:`);
+        // console.log(util.inspect(Target, { showHidden: true, depth: null }));
         // eslint-disable-next-line @typescript-eslint/naming-convention, unused-imports/no-unused-vars
         const [_, ...params] = Reflect.getMetadata('design:paramtypes', Target.prototype, name);
 
@@ -107,5 +128,6 @@ export const registerCrud = async <T extends BaseController<any>>(
         }
 
         if (!isNil(option.hook)) option.hook(Target, name);
+        // console.log(`\nFinish -> ${name} `);
     }
 };

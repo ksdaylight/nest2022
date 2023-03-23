@@ -8,7 +8,7 @@ import { ClassToPlain } from 'typings/global';
 import { PermissionAction } from '@/modules/rbac/constants';
 import { Permission } from '@/modules/rbac/decorators/permission.decorator';
 
-import { simpleCurdOption } from '@/modules/rbac/helpers';
+import { simpleCrudOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 
@@ -40,15 +40,15 @@ const permissions: PermissionChecker[] = [
     const type = await configure.get<PostTypeOption>('content.postType', 'markdown');
 
     return {
-        id: 'postManage',
+        id: 'post',
         enabled: [
-            { name: 'list', option: simpleCurdOption(permissions, '文章查询,以分页模式展示') },
-            { name: 'detail', option: simpleCurdOption(permissions, '文章详情') },
-            { name: 'update', option: simpleCurdOption(permissions, '修改文章') },
-            { name: 'delete', option: simpleCurdOption(permissions, '删除文章,支持批量删除') },
+            { name: 'list', option: simpleCrudOption(permissions, '文章查询,以分页模式展示') },
+            { name: 'detail', option: simpleCrudOption(permissions, '文章详情') },
+            { name: 'update', option: simpleCrudOption(permissions, '修改文章') },
+            { name: 'delete', option: simpleCrudOption(permissions, '删除文章,支持批量删除') },
             {
                 name: 'restore',
-                option: simpleCurdOption(permissions, '恢复回收站中的文章,支持批量恢复'),
+                option: simpleCrudOption(permissions, '恢复回收站中的文章,支持批量恢复'),
             },
         ],
         dtos: {

@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PermissionAction } from '@/modules/rbac/constants';
-import { simpleCurdOption } from '@/modules/rbac/helpers';
+import { simpleCrudOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 
 import { BaseController } from '@/modules/restful/base';
@@ -26,10 +26,10 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCurdOption(permissions, '文件查询,以分页模式展示'),
+            option: simpleCrudOption(permissions, '文件查询,以分页模式展示'),
         },
-        { name: 'detail', option: simpleCurdOption(permissions, '文件详情') },
-        { name: 'delete', option: simpleCurdOption(permissions, '删除文件,支持批量删除') },
+        { name: 'detail', option: simpleCrudOption(permissions, '文件详情') },
+        { name: 'delete', option: simpleCrudOption(permissions, '删除文件,支持批量删除') },
     ],
     dtos: {},
 }))

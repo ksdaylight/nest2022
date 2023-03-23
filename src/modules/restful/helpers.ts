@@ -29,8 +29,70 @@ export const getCleanRoutes = (data: ApiRouteOption[]): ApiRouteOption[] =>
         }
         return route;
     });
+export const createRouteModuleTree = async (
+    configure: Configure,
+    modules: { [key: string]: Type<any> },
+    routes: ApiRouteOption[],
+    parentModule?: string,
+): Promise<Routes> => {
+    const resultRoutes: RouteTree[] = [];
 
-export const createRouteModuleTree = (
+    for (const { name, path, children, controllers, doc } of routes) {
+        const moduleName = parentModule ? `${parentModule}.${name}` : name;
+        if (Object.keys(modules).includes(moduleName)) {
+            throw new Error('route name should be unique in same level!');
+        }
+
+        const depends = controllers
+            .map((c) => Reflect.getMetadata(CONTROLLER_DEPENDS, c) || [])
+            .reduce((o: Type<any>[], n) => {
+                if (o.find((i) => i === n)) return o;
+                return [...o, ...n];
+            }, []);
+
+        // console.log('-->routes in use:\n');
+        // console.dir({ name, path, children, controllers, doc });
+        for (const controller of controllers) {
+            // console.log('-->controller:\n');
+            // console.dir(controller);
+            const crudRegister = Reflect.getMetadata(CRUD_OPTIONS_REGISTER, controller);
+            if (!isNil(crudRegister) && isFunction(crudRegister)) {
+                // console.log('-------------->ok start :');
+                // console.dir(controller);
+                const CrudOptions = isAsyncFn(crudRegister)
+                    ? await crudRegister(configure)
+                    : crudRegister(configure);
+                await registerCrud(controller, CrudOptions);
+                // console.log('-------------->registerCrud:');
+                // console.dir(controller);
+            }
+        }
+        if (doc?.tags && doc.tags.length > 0) {
+            controllers.forEach((controller) => {
+                !Reflect.getMetadata('swagger/apiUseTags', controller) &&
+                    ApiTags(...doc.tags.map((tag) => (typeof tag === 'string' ? tag : tag.name))!)(
+                        controller,
+                    );
+            });
+        }
+        const module = CreateModule(`${upperFirst(camelCase(name))}RouteModule`, () => ({
+            controllers,
+            imports: depends,
+        }));
+        modules[moduleName] = module;
+        const route: RouteTree = { path, module };
+        // console.log('-->modules:\n');
+        // console.dir(modules);
+
+        if (children) {
+            route.children = await createRouteModuleTree(configure, modules, children, moduleName);
+        }
+        resultRoutes.push(route);
+    }
+    // 在循环之外返回结果路由对象
+    return resultRoutes;
+};
+export const createRouteModuleTree0 = (
     configure: Configure,
     modules: { [key: string]: Type<any> },
     routes: ApiRouteOption[],

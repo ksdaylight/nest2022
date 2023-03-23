@@ -44,7 +44,7 @@ export const checkOwner = async <E extends ObjectLiteral>(
  * @param permissions
  * @param apiSummary
  */
-export const simpleCurdOption = (
+export const simpleCrudOption = (
     permissions?: PermissionChecker[],
     apiSummary?: string,
     guest?: boolean,
@@ -70,15 +70,15 @@ export const simpleCurdOption = (
     },
 });
 
-// export function simpleCurdOption(apiSummary: string): CrudMethodOption;
+// export function simpleCrudOption(apiSummary: string): CrudMethodOption;
 
-// export function simpleCurdOption(
+// export function simpleCrudOption(
 //     permissions: PermissionChecker[],
 //     apiSummary?: string,
 //     apiBearerAuth?: boolean,
 // ): CrudMethodOption;
 
-// export function simpleCurdOption(
+// export function simpleCrudOption(
 //     permissionsOrApiSummary: PermissionChecker[] | string,
 //     apiSummary?: string,
 //     guest?: boolean,

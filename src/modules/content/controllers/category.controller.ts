@@ -2,7 +2,7 @@ import { Controller, Get, Query, SerializeOptions } from '@nestjs/common';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { simpleCurdOption } from '@/modules/rbac/helpers';
+import { simpleCrudOption } from '@/modules/rbac/helpers';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 
 import { Crud, Depends } from '@/modules/restful/decorators';
@@ -22,9 +22,9 @@ import { CategoryService } from '../services';
     enabled: [
         {
             name: 'list',
-            option: simpleCurdOption(undefined, '分类查询,以分页模式展示', true),
+            option: simpleCrudOption(undefined, '分类查询,以分页模式展示', true),
         },
-        { name: 'detail', option: simpleCurdOption(undefined, '分类详情', true) },
+        { name: 'detail', option: simpleCrudOption(undefined, '分类详情', true) },
     ],
     dtos: {
         list: ListWithTrashedQueryDto,

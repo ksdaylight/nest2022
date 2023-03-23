@@ -4,7 +4,7 @@ import { ClassTransformOptions } from 'class-transformer';
 
 import { Configure } from '../core/configure';
 /**
- * CURD控制器方法列表
+ * CRUD控制器方法列表
  */
 export type CrudMethod = 'detail' | 'delete' | 'restore' | 'list' | 'store' | 'update';
 
