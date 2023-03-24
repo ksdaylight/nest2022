@@ -13,8 +13,6 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { In } from 'typeorm';
 
-import { ClassToPlain } from 'typings/global';
-
 import { Permission } from '@/modules/rbac/decorators';
 
 import { checkOwner } from '@/modules/rbac/helpers';

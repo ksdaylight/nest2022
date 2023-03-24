@@ -16,8 +16,6 @@ import {
     SelectQueryBuilder,
 } from 'typeorm';
 
-import { ClassType, RePartial } from 'typings/global';
-
 import { App } from '../core/app';
 import { Configure } from '../core/configure';
 import { deepMerge, panic } from '../core/helpers';

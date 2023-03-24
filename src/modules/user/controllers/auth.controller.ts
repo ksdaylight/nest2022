@@ -1,7 +1,6 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ClassToPlain } from 'typings/global';
 
 import { Depends } from '@/modules/restful/decorators';
 

@@ -2,8 +2,6 @@ import { ForbiddenException, Injectable, OnModuleInit } from '@nestjs/common';
 import { isNil, isArray, omit } from 'lodash';
 import { EntityNotFoundError, In, SelectQueryBuilder, DataSource } from 'typeorm';
 
-import { ClassToPlain } from 'typings/global';
-
 import { Configure } from '@/modules/core/configure';
 import { BaseService } from '@/modules/database/base';
 import { QueryHook } from '@/modules/database/types';

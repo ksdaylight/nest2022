@@ -61,7 +61,9 @@ export const MigrationRunHandler = async (
         }
         dataSource.setOptions({ ...options, dropSchema: false });
         await dataSource.initialize();
-
+        if (!dataSource.isInitialized) {
+            await dataSource.initialize();
+        }
         await runner.handler({
             dataSource,
             transaction: args.transaction,

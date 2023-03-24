@@ -42,6 +42,7 @@ declare type RePartial<T> = {
 };
 
 */
+
 /**
  * 嵌套对象全部必选
  */
@@ -58,8 +59,8 @@ declare type ReRequired<T> = {
 /**
  * 空对象
  */
-export type RecordNever = Record<never, never>;
+declare type RecordNever = Record<never, never>;
 /**
  * 嵌套对象
  */
-export type NestedRecord = Record<string, Record<string, any>>;
+declare type NestedRecord = Record<string, Record<string, any>>;

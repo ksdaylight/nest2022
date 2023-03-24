@@ -1,6 +1,5 @@
 import { MultipartFile } from '@fastify/multipart';
 import { EntityTarget, ObjectLiteral } from 'typeorm';
-import { ClassToPlain } from 'typings/global';
 
 import { DynamicRelation } from '../database/types';
 

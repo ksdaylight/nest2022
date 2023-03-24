@@ -3,8 +3,6 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isNil } from 'lodash';
 
-import { ClassToPlain } from 'typings/global';
-
 import { PermissionAction } from '@/modules/rbac/constants';
 import { Permission } from '@/modules/rbac/decorators/permission.decorator';
 

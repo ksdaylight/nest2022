@@ -1,5 +1,4 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ClassToPlain } from 'typings/global';
 
 import { UserEntity } from '../entities';
 

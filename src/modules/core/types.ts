@@ -5,7 +5,6 @@ import { IAuthGuard } from '@nestjs/passport';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import dayjs from 'dayjs';
 import { Ora } from 'ora';
-import { RePartial } from 'typings/global';
 import { CommandModule } from 'yargs';
 
 import { Configure } from './configure';

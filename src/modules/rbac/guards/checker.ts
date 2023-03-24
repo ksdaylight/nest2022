@@ -5,8 +5,6 @@ import { ModuleRef, Reflector } from '@nestjs/core';
 import { FastifyRequest as Request } from 'fastify';
 import { isNil } from 'lodash';
 
-import { ClassToPlain } from 'typings/global';
-
 import { UserEntity } from '@/modules/user/entities';
 
 import { PERMISSION_CHECKERS } from '../constants';

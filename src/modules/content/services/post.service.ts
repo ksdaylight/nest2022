@@ -4,8 +4,6 @@ import { isArray, isFunction, isNil, omit } from 'lodash';
 
 import { EntityNotFoundError, In, IsNull, Not, SelectQueryBuilder } from 'typeorm';
 
-import { ClassToPlain } from 'typings/global';
-
 import { BaseService } from '@/modules/database/base';
 
 import { manualPaginate, paginate } from '@/modules/database/helpers';

@@ -1,5 +1,3 @@
-import { ClassToPlain } from 'typings/global';
-
 import { PostBodyType } from './constants';
 import { PostEntity } from './entities';
 

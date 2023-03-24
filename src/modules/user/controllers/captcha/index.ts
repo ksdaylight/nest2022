@@ -1,7 +1,5 @@
 import { isNil } from 'lodash';
 
-import { ClassType } from 'typings/global';
-
 import { Configure } from '@/modules/core/configure';
 
 import { UserEnabled } from '../../types';

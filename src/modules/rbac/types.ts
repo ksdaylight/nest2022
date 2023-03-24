@@ -1,7 +1,6 @@
 import { AbilityTuple, MongoAbility, MongoQuery, RawRuleFrom } from '@casl/ability';
 import { ModuleRef } from '@nestjs/core';
 import { FastifyRequest as Request } from 'fastify';
-import { ClassToPlain } from 'typings/global';
 
 import { UserEntity } from '../user/entities/user.entity';
 

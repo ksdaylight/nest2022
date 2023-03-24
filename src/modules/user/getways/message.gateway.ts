@@ -11,7 +11,7 @@ import type { WsResponse } from '@nestjs/websockets';
 import { instanceToPlain } from 'class-transformer';
 import Redis from 'ioredis';
 import { isNil, pick } from 'lodash';
-import { ClassToPlain } from 'typings/global';
+
 import WebSocket from 'ws';
 
 import { getTime } from '@/modules/core/helpers';

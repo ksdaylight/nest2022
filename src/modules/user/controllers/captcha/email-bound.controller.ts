@@ -1,8 +1,6 @@
 import { Body, Controller, Patch, Post, SerializeOptions } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { ClassToPlain } from 'typings/global';
-
 import { Depends } from '@/modules/restful/decorators';
 
 import { CaptchaActionType, CaptchaType } from '../../constants';

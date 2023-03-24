@@ -16,7 +16,7 @@ import {
     SelectQueryBuilder,
     TreeRepository,
 } from 'typeorm';
-import { ReRequired } from 'typings/global';
+
 import yargs from 'yargs';
 
 import { Configure } from '../core/configure';

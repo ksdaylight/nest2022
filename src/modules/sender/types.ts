@@ -1,6 +1,6 @@
 import Email from 'email-templates';
 import { Attachment } from 'nodemailer/lib/mailer';
-import { NestedRecord, RecordNever } from 'typings/global';
+
 
 /**
  * 腾讯云短信驱动配置

@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { In } from 'typeorm';
-import { ClassToPlain } from 'typings/global';
 
 import { PermissionAction } from '@/modules/rbac/constants';
 import { Permission } from '@/modules/rbac/decorators/permission.decorator';

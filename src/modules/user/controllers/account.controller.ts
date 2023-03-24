@@ -18,8 +18,6 @@ import { isNil, pick } from 'lodash';
 
 import { lookup } from 'mime-types';
 
-import { ClassToPlain } from 'typings/global';
-
 import { Configure } from '@/modules/core/configure';
 import { OptionalUUIDPipe } from '@/modules/core/pipes';
 

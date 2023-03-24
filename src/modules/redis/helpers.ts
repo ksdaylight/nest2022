@@ -1,5 +1,3 @@
-import { RePartial } from 'typings/global';
-
 import { createConnectionOptions } from '../core/helpers';
 import { ConfigureFactory, ConfigureRegister } from '../core/types';
 

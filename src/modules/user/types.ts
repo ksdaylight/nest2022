@@ -1,5 +1,3 @@
-import { ClassToPlain, RecordNever } from 'typings/global';
-
 import { DynamicRelation } from '../database/types';
 
 import { CaptchaActionType, CaptchaDtoGroups, CaptchaType } from './constants';

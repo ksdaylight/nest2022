@@ -3,8 +3,6 @@ import { resolve } from 'path';
 import bcrypt from 'bcrypt';
 import { isNil, toNumber } from 'lodash';
 
-import { RePartial } from 'typings/global';
-
 import { App } from '../core/app';
 
 import { Configure } from '../core/configure';

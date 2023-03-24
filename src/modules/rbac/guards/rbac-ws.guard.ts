@@ -4,8 +4,6 @@ import { ModuleRef, Reflector } from '@nestjs/core';
 
 import { isNil } from 'lodash';
 
-import { ClassToPlain } from 'typings/global';
-
 import { UserEntity } from '@/modules/user/entities';
 import { JwtWsGuard } from '@/modules/user/guards';
 

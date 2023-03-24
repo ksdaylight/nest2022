@@ -2,8 +2,6 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { isNil } from 'lodash';
 import { EntityNotFoundError, SelectQueryBuilder } from 'typeorm';
 
-import { ClassToPlain } from 'typings/global';
-
 import { BaseService } from '@/modules/database/base';
 
 import { UserEntity } from '@/modules/user/entities';
