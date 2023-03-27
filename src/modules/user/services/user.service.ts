@@ -32,6 +32,12 @@ export class UserService extends BaseService<UserEntity, UserRepository> impleme
     }
 
     async onModuleInit() {
+        // console.log(
+        //     `\n ----getUserConfig-------------- ${!(await this.configure.get<boolean>(
+        //         'app.server',
+        //         true,
+        //     ))} ------ ${!this.dataSource.isInitialized} \n`
+        // );
         if (
             !(await this.configure.get<boolean>('app.server', true)) ||
             !this.dataSource.isInitialized

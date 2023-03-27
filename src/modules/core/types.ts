@@ -120,6 +120,28 @@ export interface AppConfig {
      */
     api?: string;
 }
+/**
+ 源码1：
+    server: boolean;
+
+源码2：
+const { _ = [] } = yargs(hideBin(process.argv)).argv as any;
+        configure.set('app.server', !!(_.length <= 0 || _[0] === 'start'));
+
+源码3：
+async onApplicationBootstrap() {
+        if (!(await this.configure.get<boolean>('app.server', true))) return null;
+        const queryRunner = this.dataSource.createQueryRunner();
+
+        await queryRunner.connect();
+        await queryRunner.startTransaction();
+ ，app.server 是一个应用配置项，用于指示应用是否以服务器模式运行。如果配置项的值为 true，则意味着应用以服务器模式运行，否则意味着应用以瞬时模式运行。在这里，“服务器模式”是指应用一直在运行，例如在生产环境中，而“瞬时模式”是指应用只在执行一些命令时运行，例如在执行数据迁移、数据填充或生成模块类时。
+
+在源码2中，通过解析命令行参数来设置 app.server 的值，如果没有指定命令行参数或者指定的是 start，则将其设置为 true，否则设置为 false。
+
+在源码3中，如果 app.server 的值为 false，则直接返回 null，否则创建一个查询执行器并连接到数据源，如果连接成功则开始一个事务。这表明在执行某些命令时，只有在 app.server 为 true 的情况下才需要连接到数据源并执行事务操作，而在其他情况下则无需执行。
+
+ */
 
 /** ****************************** CLI及命令  ***************************** */
 

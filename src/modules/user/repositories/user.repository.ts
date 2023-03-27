@@ -7,7 +7,7 @@ import { UserEntity } from '../entities';
 
 @CustomRepository(UserEntity)
 export class UserRepository extends BaseRepository<UserEntity> {
-    protected _qbName = 'post';
+    protected _qbName = 'user';
 
     /**
      * 构建基础Query

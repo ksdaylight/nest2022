@@ -6,6 +6,9 @@ import { WsAdapter } from '@nestjs/platform-ws';
 import { useContainer } from 'class-validator';
 import { isNil } from 'lodash';
 
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+
 import { Restful } from '../restful/restful';
 import { ApiConfig } from '../restful/types';
 
@@ -33,6 +36,19 @@ export class App {
             configure.add(key, configs[key]);
         }
         await configure.sync();
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const { _ = [] } = yargs(hideBin(process.argv)).argv as any;
+        configure.set('app.server', !!(_.length <= 0 || _[0] === 'start'));
+        /**
+         * 对于命令 pnpm start:dev a b c，那么 _ 的值就是 ['a', 'b', 'c']。
+         * 对于命令 pnpm cli dbs 那么 _ 的值就是 dbs
+         * false -----------false --------false-----------dbs ------------dbs
+         */
+        // console.log(
+        //     `${!!(_.length <= 0 || _[0] === 'start')} -----------${_.length <= 0} --------${
+        //         _[0] === 'start'
+        //     }-----------${_[0]} ------------${_}`,
+        // );
         let appUrl = await configure.get('app.url', undefined);
         if (isNil(appUrl)) {
             const host = await configure.get<string>('app.host');
