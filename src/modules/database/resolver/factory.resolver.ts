@@ -118,7 +118,7 @@ export class FactoryResolver<Entity, Settings> {
         return list;
     }
     /**
-     * 根据Entity解析出其定义的处理器
+     * 根据Entity解析出其定义的处理器.也就是，一个类里，有子类的话，把子类也生成好，最为这个类的属性
      * @param entity
      */
 

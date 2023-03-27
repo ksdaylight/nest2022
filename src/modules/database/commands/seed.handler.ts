@@ -17,10 +17,11 @@ import { SeederOptions } from '../types';
  */
 
 export const SeedHandler = async (args: SeederOptions, configure: Configure) => {
+    // 对比MigrationRunHandler，可知这个SeederOptions，只用了命令表中的trans参数
     const runner = (await getDbConfig(args.connection)).seedRunner ?? SeedResolver;
-    console.dir(args, { depth: 2 });
-    // console.dir(configure, { depth: 2 });
-    console.dir(runner, { depth: 2 });
+    // console.dir(args, { depth: 2 });
+    // // console.dir(configure, { depth: 2 });
+    // console.dir(runner, { depth: 2 });
     const spinner = ora('Start run seeder');
     try {
         spinner.start();

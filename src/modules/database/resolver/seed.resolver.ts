@@ -25,7 +25,7 @@ export class SeedResolver extends BaseSeeder {
      */
     public async run(_factory: DbFactory, _dataSource: DataSource): Promise<any> {
         let seeders: Type<any>[] = ((await getDbConfig(this.connection)) as any).seeders ?? [];
-        if (this.configure.getRunEnv() !== EnvironmentType.PRODUCTION) {
+        if (this.configure.getRunEnv() === EnvironmentType.PRODUCTION) {
             const seedLockFile = resolve(__dirname, '../../../..', 'seed-lock.yml');
             ensureFileSync(seedLockFile);
             const yml = YAML.parse(readFileSync(seedLockFile, 'utf8'));
