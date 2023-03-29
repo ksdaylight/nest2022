@@ -25,8 +25,11 @@ const permissions: PermissionChecker[] = [
 @Crud(async () => ({
     id: 'permission',
     enabled: [
-        { name: 'list', option: simpleCrudOption(permissions, '权限查询,以分页模式展示') },
-        { name: 'detail', option: simpleCrudOption(permissions, '权限详情') },
+        {
+            name: 'list',
+            option: simpleCrudOption({ permissions, summary: '权限查询,以分页模式展示' }),
+        },
+        { name: 'detail', option: simpleCrudOption({ permissions, summary: '权限详情' }) },
     ],
     dtos: {
         list: QueryPermssionDto,

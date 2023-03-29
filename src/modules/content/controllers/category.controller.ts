@@ -22,9 +22,9 @@ import { CategoryService } from '../services';
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption(undefined, '分类查询,以分页模式展示', true),
+            option: simpleCrudOption({ summary: '分类查询,以分页模式展示', guest: true }),
         },
-        { name: 'detail', option: simpleCrudOption(undefined, '分类详情', true) },
+        { name: 'detail', option: simpleCrudOption({ summary: '分类详情', guest: true }) },
     ],
     dtos: {
         list: ListWithTrashedQueryDto,

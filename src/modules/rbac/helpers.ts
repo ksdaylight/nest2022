@@ -44,31 +44,31 @@ export const checkOwner = async <E extends ObjectLiteral>(
  * @param permissions
  * @param apiSummary
  */
-export const simpleCrudOption = (
-    permissions?: PermissionChecker[],
-    apiSummary?: string,
-    guest?: boolean,
-    apiBearerAuth?: boolean,
-): CrudMethodOption => ({
-    allowGuest: guest,
-    hook: (target, method) => {
-        if (permissions) ManualPermission(target, method, permissions);
-        if (apiSummary) {
-            ApiOperation({ summary: apiSummary })(
-                target,
-                method,
-                Object.getOwnPropertyDescriptor(target.prototype, method),
-            );
-        }
-        if (apiBearerAuth) {
-            ApiBearerAuth()(
-                target,
-                method,
-                Object.getOwnPropertyDescriptor(target.prototype, method),
-            );
-        }
-    },
-});
+export function simpleCrudOption(
+    option: { permissions?: PermissionChecker[]; guest?: boolean; summary?: string } | string = {},
+): CrudMethodOption {
+    const params = typeof option === 'string' ? { summary: option } : option;
+    const { permissions, guest: allowGuest, summary } = params;
+    return {
+        allowGuest,
+        hook: (target, method) => {
+            if (!isNil(permissions)) ManualPermission(target, method, permissions);
+            if (!isNil(summary))
+                ApiOperation({ summary })(
+                    target,
+                    method,
+                    Object.getOwnPropertyDescriptor(target.prototype, method),
+                );
+            if (!allowGuest) {
+                ApiBearerAuth()(
+                    target,
+                    method,
+                    Object.getOwnPropertyDescriptor(target.prototype, method),
+                );
+            }
+        },
+    };
+}
 
 // export function simpleCrudOption(apiSummary: string): CrudMethodOption;
 

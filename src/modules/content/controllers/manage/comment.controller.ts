@@ -28,9 +28,12 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption(permissions, '查询评论列表'),
+            option: simpleCrudOption({ permissions, summary: '查询评论列表' }),
         },
-        { name: 'delete', option: simpleCrudOption(permissions, '删除评论,支持批量删除') },
+        {
+            name: 'delete',
+            option: simpleCrudOption({ permissions, summary: '删除评论,支持批量删除' }),
+        },
     ],
     dtos: {
         list: ManageQueryCommentDto,

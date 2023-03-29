@@ -26,10 +26,10 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption(permissions, '文件查询,以分页模式展示'),
+            option: simpleCrudOption({ permissions, summary: '文件查询,以分页模式展示' }),
         },
-        { name: 'detail', option: simpleCrudOption(permissions, '文件详情') },
-        { name: 'delete', option: simpleCrudOption(permissions, '删除文件,支持批量删除') },
+        { name: 'detail', option: simpleCrudOption({ permissions, summary: '文件详情' }) },
+        { name: 'delete', option: simpleCrudOption({ permissions, summary: '删除文件,支持批量删除' }) },
     ],
     dtos: {},
 }))

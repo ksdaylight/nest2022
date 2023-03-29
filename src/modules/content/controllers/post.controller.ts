@@ -2,10 +2,9 @@ import { Controller } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
 
+import { simpleCrudOption } from '@/modules/rbac/helpers';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 import { Crud, Depends } from '@/modules/restful/decorators';
-
-import { createHookOption } from '@/modules/restful/helpers';
 
 import { ContentModule } from '../content.module';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
@@ -18,27 +17,27 @@ import { PostService } from '../services/post.service';
     enabled: [
         {
             name: 'list',
-            option: createHookOption('文章查询,以分页模式展示'),
+            option: simpleCrudOption('文章查询,以分页模式展示'),
         },
         {
             name: 'detail',
-            option: createHookOption('文章详情'),
+            option: simpleCrudOption('文章详情'),
         },
         {
             name: 'store',
-            option: createHookOption('创建文章'),
+            option: simpleCrudOption('创建文章'),
         },
         {
             name: 'update',
-            option: createHookOption('更新文章'),
+            option: simpleCrudOption('更新文章'),
         },
         {
             name: 'delete',
-            option: createHookOption('删除文章8'),
+            option: simpleCrudOption('删除文章8'),
         },
         {
             name: 'restore',
-            option: createHookOption('恢复文章'),
+            option: simpleCrudOption('恢复文章'),
         },
     ],
     dtos: {

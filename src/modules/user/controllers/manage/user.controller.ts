@@ -25,20 +25,23 @@ const permissions: PermissionChecker[] = [
 @Crud(() => ({
     id: 'user',
     enabled: [
-        { name: 'list', option: simpleCrudOption(permissions, '用户查询,以分页模式展示') },
-        { name: 'detail', option: simpleCrudOption(permissions, '用户详情') },
-        { name: 'store', option: simpleCrudOption(permissions, '新增用户') },
-        { name: 'update', option: simpleCrudOption(permissions, '修改用户信息') },
+        {
+            name: 'list',
+            option: simpleCrudOption({ permissions, summary: '用户查询,以分页模式展示' }),
+        },
+        { name: 'detail', option: simpleCrudOption({ permissions, summary: '用户详情' }) },
+        { name: 'store', option: simpleCrudOption({ permissions, summary: '新增用户' }) },
+        { name: 'update', option: simpleCrudOption({ permissions, summary: '修改用户信息' }) },
         {
             name: 'delete',
-            option: simpleCrudOption(
+            option: simpleCrudOption({
                 permissions,
-                '删除用户,支持批量删除(初始化超级管理员用户不可删除)',
-            ),
+                summary: '删除用户,支持批量删除(初始化超级管理员用户不可删除)',
+            }),
         },
         {
             name: 'restore',
-            option: simpleCrudOption(permissions, '恢复回收站中的用户,支持批量恢复'),
+            option: simpleCrudOption({ permissions, summary: '恢复回收站中的用户,支持批量恢复' }),
         },
     ],
     dtos: {

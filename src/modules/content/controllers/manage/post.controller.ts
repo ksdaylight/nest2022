@@ -40,13 +40,22 @@ const permissions: PermissionChecker[] = [
     return {
         id: 'post',
         enabled: [
-            { name: 'list', option: simpleCrudOption(permissions, '文章查询,以分页模式展示') },
-            { name: 'detail', option: simpleCrudOption(permissions, '文章详情') },
-            { name: 'update', option: simpleCrudOption(permissions, '修改文章') },
-            { name: 'delete', option: simpleCrudOption(permissions, '删除文章,支持批量删除') },
+            {
+                name: 'list',
+                option: simpleCrudOption({ permissions, summary: '文章查询,以分页模式展示' }),
+            },
+            { name: 'detail', option: simpleCrudOption({ permissions, summary: '文章详情' }) },
+            { name: 'update', option: simpleCrudOption({ permissions, summary: '修改文章' }) },
+            {
+                name: 'delete',
+                option: simpleCrudOption({ permissions, summary: '删除文章,支持批量删除' }),
+            },
             {
                 name: 'restore',
-                option: simpleCrudOption(permissions, '恢复回收站中的文章,支持批量恢复'),
+                option: simpleCrudOption({
+                    permissions,
+                    summary: '恢复回收站中的文章,支持批量恢复',
+                }),
             },
         ],
         dtos: {

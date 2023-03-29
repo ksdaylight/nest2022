@@ -27,15 +27,21 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption(permissions, '分类查询,以分页模式展示'),
+            option: simpleCrudOption({
+                permissions,
+                summary: '分类查询,以分页模式展示',
+            }),
         },
-        { name: 'detail', option: simpleCrudOption(permissions, '分类详情') },
-        { name: 'store', option: simpleCrudOption(permissions, '添加分类') },
-        { name: 'update', option: simpleCrudOption(permissions, '修改分类信息') },
-        { name: 'delete', option: simpleCrudOption(permissions, '删除分类,支持批量删除') },
+        { name: 'detail', option: simpleCrudOption({ permissions, summary: '分类详情' }) },
+        { name: 'store', option: simpleCrudOption({ permissions, summary: '添加分类' }) },
+        { name: 'update', option: simpleCrudOption({ permissions, summary: '修改分类信息' }) },
+        {
+            name: 'delete',
+            option: simpleCrudOption({ permissions, summary: '删除分类,支持批量删除' }),
+        },
         {
             name: 'restore',
-            option: simpleCrudOption(permissions, '恢复回收站中的分类,支持批量恢复'),
+            option: simpleCrudOption({ permissions, summary: '恢复回收站中的分类,支持批量恢复' }),
         },
     ],
     dtos: {

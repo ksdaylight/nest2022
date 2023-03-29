@@ -23,11 +23,14 @@ const permissions: PermissionChecker[] = [
 @Crud(() => ({
     id: 'message',
     enabled: [
-        { name: 'list', option: simpleCrudOption(permissions, '消息查询,以分页模式展示') },
-        { name: 'detail', option: simpleCrudOption(permissions, '消息详情') },
+        {
+            name: 'list',
+            option: simpleCrudOption({ permissions, summary: '消息查询,以分页模式展示' }),
+        },
+        { name: 'detail', option: simpleCrudOption({ permissions, summary: '消息详情' }) },
         {
             name: 'delete',
-            option: simpleCrudOption(permissions, '删除消息,支持批量删除'),
+            option: simpleCrudOption({ permissions, summary: '删除消息,支持批量删除' }),
         },
     ],
     dtos: {
