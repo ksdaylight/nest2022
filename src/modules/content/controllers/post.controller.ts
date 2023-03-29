@@ -11,7 +11,7 @@ import { ContentModule } from '../content.module';
 import { CreatePostDto, QueryPostDto, UpdatePostDto } from '../dtos';
 import { PostService } from '../services/post.service';
 
-@ApiTags('文章')
+@ApiTags('文章操作')
 @Depends(ContentModule)
 @Crud(async () => ({
     id: 'post',
@@ -34,7 +34,7 @@ import { PostService } from '../services/post.service';
         },
         {
             name: 'delete',
-            option: createHookOption('删除文章'),
+            option: createHookOption('删除文章8'),
         },
         {
             name: 'restore',

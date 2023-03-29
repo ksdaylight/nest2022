@@ -15,7 +15,7 @@ import { QueryCategoryTreeDto } from '../dtos';
 
 import { CategoryService } from '../services';
 
-@ApiTags('分类')
+@ApiTags('分类查询')
 @Depends(ContentModule)
 @Crud(async () => ({
     id: 'category',

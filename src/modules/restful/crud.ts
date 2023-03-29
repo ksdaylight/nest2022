@@ -26,43 +26,43 @@ export const registerCrud = async <T extends BaseController<any>>(
             continue;
         methods.push(item);
     }
-    // console.log('\n');
-    // console.dir(options);
+
     for (const { name, option = {} } of methods) {
         if (isNil(Object.getOwnPropertyDescriptor(Target.prototype, name))) {
-            const descriptor =
-                Target instanceof BaseControllerWithTrash
-                    ? Object.getOwnPropertyDescriptor(BaseControllerWithTrash.prototype, name)
-                    : Object.getOwnPropertyDescriptor(BaseController.prototype, name);
+            // Target是一个类，而不是一个实例。instanceof运算符用于检查一个实例是否属于某个类或其子类。
+            // 要正确检查Target类是否是BaseControllerWithTrash的子类，您需要使用prototype属性和isPrototypeOf方法。
+            // eslint-disable-next-line no-prototype-builtins
+            const isInheritedFromWithTrash = BaseControllerWithTrash.prototype.isPrototypeOf(
+                Target.prototype,
+            );
+            let descriptor: PropertyDescriptor | undefined;
+            if (isInheritedFromWithTrash) {
+                descriptor = Object.getOwnPropertyDescriptor(
+                    BaseControllerWithTrash.prototype,
+                    name,
+                );
+            } else {
+                descriptor = Object.getOwnPropertyDescriptor(BaseController.prototype, name);
+            }
 
+            if (!descriptor || !Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
+                throw new Error(
+                    `Descriptor for '${name}' on '${
+                        isInheritedFromWithTrash ? 'BaseControllerWithTrash' : 'BaseController'
+                    }' of '${Target.name}' is undefined or does not have a value.`,
+                );
+            }
             Object.defineProperty(Target.prototype, name, {
                 ...descriptor,
-                async value(...args: any[]) {
+                async [`${name}`](...args: any[]) {
                     return descriptor.value.apply(this, args);
                 },
             });
         }
-        // const baseDescriptor =
-        //     Target instanceof BaseControllerWithTrash
-        //         ? Object.getOwnPropertyDescriptor(BaseControllerWithTrash.prototype, name)
-        //         : Object.getOwnPropertyDescriptor(BaseController.prototype, name);
-
-        // if (!isNil(baseDescriptor)) {
-        //     let descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
-        //     descriptor = isNil(descriptor) ? baseDescriptor : descriptor;
-        //     Object.defineProperty(Target.prototype, name, {
-        //         ...descriptor,
-        //         async value(...args: any[]) {
-        //             return descriptor.value.apply(this, args);
-        //         },
-        //     });
-        // }
 
         const descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
-        // console.log(`\n start ${name} of:`);
-        // console.log(util.inspect(Target, { showHidden: true, depth: null }));
-        // eslint-disable-next-line @typescript-eslint/naming-convention, unused-imports/no-unused-vars
-        const [_, ...params] = Reflect.getMetadata('design:paramtypes', Target.prototype, name);
+
+        const [, ...params] = Reflect.getMetadata('design:paramtypes', Target.prototype, name);
 
         if (name === 'store' && !isNil(dtos.store)) {
             Reflect.defineMetadata(

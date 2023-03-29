@@ -92,57 +92,57 @@ export const createRouteModuleTree = async (
     // 在循环之外返回结果路由对象
     return resultRoutes;
 };
-export const createRouteModuleTree0 = (
-    configure: Configure,
-    modules: { [key: string]: Type<any> },
-    routes: ApiRouteOption[],
-    parentModule?: string,
-): Promise<Routes> =>
-    Promise.all(
-        routes.map(async ({ name, path, children, controllers, doc }) => {
-            const moduleName = parentModule ? `${parentModule}.${name}` : name;
-            if (Object.keys(modules).includes(moduleName)) {
-                throw new Error('route name should be unique in same level!');
-            }
-            const depends = controllers
-                .map((c) => Reflect.getMetadata(CONTROLLER_DEPENDS, c) || [])
-                .reduce((o: Type<any>[], n) => {
-                    if (o.find((i) => i === n)) return o;
-                    return [...o, ...n];
-                }, []);
-            for (const controller of controllers) {
-                const crudRegister = Reflect.getMetadata(CRUD_OPTIONS_REGISTER, controller);
-                if (!isNil(crudRegister) && isFunction(crudRegister)) {
-                    const CrudOptions = isAsyncFn(crudRegister)
-                        ? await crudRegister(configure)
-                        : crudRegister(configure);
-                    registerCrud(controller, CrudOptions);
-                }
-            }
-            if (doc?.tags && doc.tags.length > 0) {
-                controllers.forEach((controller) => {
-                    !Reflect.getMetadata('swagger/apiUseTags', controller) &&
-                        ApiTags(
-                            ...doc.tags.map((tag) => (typeof tag === 'string' ? tag : tag.name))!,
-                        )(controller);
-                });
-            }
-            const module = CreateModule(`${upperFirst(camelCase(name))}RouteModule`, () => ({
-                controllers,
-                imports: depends,
-            }));
-            modules[moduleName] = module;
-            const route: RouteTree = { path, module };
-            if (children)
-                route.children = await createRouteModuleTree(
-                    configure,
-                    modules,
-                    children,
-                    moduleName,
-                );
-            return route;
-        }),
-    );
+// export const createRouteModuleTree = (
+//     configure: Configure,
+//     modules: { [key: string]: Type<any> },
+//     routes: ApiRouteOption[],
+//     parentModule?: string,
+// ): Promise<Routes> =>
+//     Promise.all(
+//         routes.map(async ({ name, path, children, controllers, doc }) => {
+//             const moduleName = parentModule ? `${parentModule}.${name}` : name;
+//             if (Object.keys(modules).includes(moduleName)) {
+//                 throw new Error('route name should be unique in same level!');
+//             }
+//             const depends = controllers
+//                 .map((c) => Reflect.getMetadata(CONTROLLER_DEPENDS, c) || [])
+//                 .reduce((o: Type<any>[], n) => {
+//                     if (o.find((i) => i === n)) return o;
+//                     return [...o, ...n];
+//                 }, []);
+//             for (const controller of controllers) {
+//                 const crudRegister = Reflect.getMetadata(CRUD_OPTIONS_REGISTER, controller);
+//                 if (!isNil(crudRegister) && isFunction(crudRegister)) {
+//                     const CrudOptions = isAsyncFn(crudRegister)
+//                         ? await crudRegister(configure)
+//                         : crudRegister(configure);
+//                     registerCrud(controller, CrudOptions);
+//                 }
+//             }
+//             if (doc?.tags && doc.tags.length > 0) {
+//                 controllers.forEach((controller) => {
+//                     !Reflect.getMetadata('swagger/apiUseTags', controller) &&
+//                         ApiTags(
+//                             ...doc.tags.map((tag) => (typeof tag === 'string' ? tag : tag.name))!,
+//                         )(controller);
+//                 });
+//             }
+//             const module = CreateModule(`${upperFirst(camelCase(name))}RouteModule`, () => ({
+//                 controllers,
+//                 imports: depends,
+//             }));
+//             modules[moduleName] = module;
+//             const route: RouteTree = { path, module };
+//             if (children)
+//                 route.children = await createRouteModuleTree(
+//                     configure,
+//                     modules,
+//                     children,
+//                     moduleName,
+//                 );
+//             return route;
+//         }),
+//     );
 /**
  * 生成最终路由路径(为路由路径添加自定义及版本前缀)
  * @param routePath
