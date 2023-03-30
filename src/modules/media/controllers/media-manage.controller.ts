@@ -29,7 +29,10 @@ const permissions: PermissionChecker[] = [
             option: createHookOption({ permissions, summary: '文件查询,以分页模式展示' }),
         },
         { name: 'detail', option: createHookOption({ permissions, summary: '文件详情' }) },
-        { name: 'delete', option: createHookOption({ permissions, summary: '删除文件,支持批量删除' }) },
+        {
+            name: 'delete',
+            option: createHookOption({ permissions, summary: '删除文件,支持批量删除' }),
+        },
     ],
     dtos: {},
 }))

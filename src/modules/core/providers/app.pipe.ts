@@ -27,7 +27,7 @@ export class AppPipe extends ValidationPipe {
         });
         const toValidate = isObject(value)
             ? Object.fromEntries(
-                  Object.entries(value as Record<string, any>).map((key, v) => {
+                  Object.entries(value as Record<string, any>).map(([key, v]) => {
                       if (!isObject(v) || !('mimetype' in v)) return [key, v];
                       return [key, omit(v, ['fields'])];
                   }),

@@ -22,13 +22,19 @@ const permissions: PermissionChecker[] = [
 @Crud(() => ({
     id: 'role',
     enabled: [
-        { name: 'list', option: createHookOption({ permissions, summary: '角色查询,以分页模式展示' }) },
+        {
+            name: 'list',
+            option: createHookOption({ permissions, summary: '角色查询,以分页模式展示' }),
+        },
         { name: 'detail', option: createHookOption({ permissions, summary: '角色详情' }) },
         { name: 'store', option: createHookOption({ permissions, summary: '添加角色' }) },
         { name: 'update', option: createHookOption({ permissions, summary: '修改角色信息' }) },
         {
             name: 'delete',
-            option: createHookOption({ permissions, summary: '删除角色,支持批量删除(系统角色不可删除)' }),
+            option: createHookOption({
+                permissions,
+                summary: '删除角色,支持批量删除(系统角色不可删除)',
+            }),
         },
         {
             name: 'restore',

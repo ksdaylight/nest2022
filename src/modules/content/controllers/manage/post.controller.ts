@@ -15,15 +15,9 @@ import { ReqUser } from '@/modules/user/decorators';
 import { UserEntity } from '@/modules/user/entities';
 
 import { ContentModule } from '../../content.module';
-import {
-    QueryPostDto,
-    ManageUpdatePostDto,
-    ManageCreatePostDto,
-    ManageUpdatePostWithOutTypeDto,
-} from '../../dtos';
+import { QueryPostDto, ManageUpdatePostDto, ManageCreatePostDto } from '../../dtos';
 import { PostEntity } from '../../entities';
 import { PostService } from '../../services/post.service';
-import { PostTypeOption } from '../../types';
 
 const permissions: PermissionChecker[] = [
     async (ab) => ab.can(PermissionAction.MANAGE, PostEntity.name),
@@ -34,9 +28,7 @@ const permissions: PermissionChecker[] = [
 @ApiTags('文章管理')
 @ApiBearerAuth()
 @Depends(ContentModule)
-@Crud(async (configure) => {
-    const type = await configure.get<PostTypeOption>('content.postType', 'markdown');
-
+@Crud(async () => {
     return {
         id: 'post',
         enabled: [
@@ -60,7 +52,7 @@ const permissions: PermissionChecker[] = [
         ],
         dtos: {
             list: QueryPostDto,
-            update: type === 'all' ? ManageUpdatePostDto : ManageUpdatePostWithOutTypeDto,
+            update: ManageUpdatePostDto,
         },
     };
 })
