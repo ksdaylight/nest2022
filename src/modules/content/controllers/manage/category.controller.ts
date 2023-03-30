@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PermissionAction } from '@/modules/rbac/constants';
-import { simpleCrudOption } from '@/modules/rbac/helpers';
+import { createHookOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 import { Crud, Depends } from '@/modules/restful/decorators';
@@ -27,21 +27,21 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption({
+            option: createHookOption({
                 permissions,
                 summary: '分类查询,以分页模式展示',
             }),
         },
-        { name: 'detail', option: simpleCrudOption({ permissions, summary: '分类详情' }) },
-        { name: 'store', option: simpleCrudOption({ permissions, summary: '添加分类' }) },
-        { name: 'update', option: simpleCrudOption({ permissions, summary: '修改分类信息' }) },
+        { name: 'detail', option: createHookOption({ permissions, summary: '分类详情' }) },
+        { name: 'store', option: createHookOption({ permissions, summary: '添加分类' }) },
+        { name: 'update', option: createHookOption({ permissions, summary: '修改分类信息' }) },
         {
             name: 'delete',
-            option: simpleCrudOption({ permissions, summary: '删除分类,支持批量删除' }),
+            option: createHookOption({ permissions, summary: '删除分类,支持批量删除' }),
         },
         {
             name: 'restore',
-            option: simpleCrudOption({ permissions, summary: '恢复回收站中的分类,支持批量恢复' }),
+            option: createHookOption({ permissions, summary: '恢复回收站中的分类,支持批量恢复' }),
         },
     ],
     dtos: {

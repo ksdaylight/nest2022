@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PermissionAction } from '@/modules/rbac/constants';
-import { simpleCrudOption } from '@/modules/rbac/helpers';
+import { createHookOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 import { BaseController } from '@/modules/restful/base';
 
@@ -25,12 +25,12 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption({ permissions, summary: '消息查询,以分页模式展示' }),
+            option: createHookOption({ permissions, summary: '消息查询,以分页模式展示' }),
         },
-        { name: 'detail', option: simpleCrudOption({ permissions, summary: '消息详情' }) },
+        { name: 'detail', option: createHookOption({ permissions, summary: '消息详情' }) },
         {
             name: 'delete',
-            option: simpleCrudOption({ permissions, summary: '删除消息,支持批量删除' }),
+            option: createHookOption({ permissions, summary: '删除消息,支持批量删除' }),
         },
     ],
     dtos: {

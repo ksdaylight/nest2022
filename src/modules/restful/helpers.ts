@@ -1,6 +1,6 @@
 import { Type } from '@nestjs/common';
 import { Routes, RouteTree } from '@nestjs/core';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import chalk from 'chalk';
 import { camelCase, isFunction, isNil, omit, trim, upperFirst } from 'lodash';
 
@@ -11,7 +11,7 @@ import { CONTROLLER_DEPENDS, CRUD_OPTIONS_REGISTER } from './constants';
 import { registerCrud } from './crud';
 import { Restful } from './restful';
 
-import { ApiDocOption, ApiRouteOption, CrudMethodOption } from './types';
+import { ApiDocOption, ApiRouteOption } from './types';
 
 export const trimPath = (routePath: string, addPrefix = true) =>
     `${addPrefix ? '/' : ''}${trim(routePath.replace('//', '/'), '/')}`;
@@ -200,15 +200,15 @@ export async function echoApi(configure: Configure, restful: Restful) {
     }
 }
 
-export function createHookOption(summary?: string): CrudMethodOption {
-    return {
-        hook: (target, method) => {
-            if (!isNil(summary))
-                ApiOperation({ summary })(
-                    target,
-                    method,
-                    Object.getOwnPropertyDescriptor(target.prototype, method),
-                );
-        },
-    };
-}
+// export function createHookOption(summary?: string): CrudMethodOption {
+//     return {
+//         hook: (target, method) => {
+//             if (!isNil(summary))
+//                 ApiOperation({ summary })(
+//                     target,
+//                     method,
+//                     Object.getOwnPropertyDescriptor(target.prototype, method),
+//                 );
+//         },
+//     };
+// }

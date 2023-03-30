@@ -6,7 +6,7 @@ import { isNil } from 'lodash';
 import { PermissionAction } from '@/modules/rbac/constants';
 import { Permission } from '@/modules/rbac/decorators/permission.decorator';
 
-import { simpleCrudOption } from '@/modules/rbac/helpers';
+import { createHookOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 
@@ -42,17 +42,17 @@ const permissions: PermissionChecker[] = [
         enabled: [
             {
                 name: 'list',
-                option: simpleCrudOption({ permissions, summary: '文章查询,以分页模式展示' }),
+                option: createHookOption({ permissions, summary: '文章查询,以分页模式展示' }),
             },
-            { name: 'detail', option: simpleCrudOption({ permissions, summary: '文章详情' }) },
-            { name: 'update', option: simpleCrudOption({ permissions, summary: '修改文章' }) },
+            { name: 'detail', option: createHookOption({ permissions, summary: '文章详情' }) },
+            { name: 'update', option: createHookOption({ permissions, summary: '修改文章' }) },
             {
                 name: 'delete',
-                option: simpleCrudOption({ permissions, summary: '删除文章,支持批量删除' }),
+                option: createHookOption({ permissions, summary: '删除文章,支持批量删除' }),
             },
             {
                 name: 'restore',
-                option: simpleCrudOption({
+                option: createHookOption({
                     permissions,
                     summary: '恢复回收站中的文章,支持批量恢复',
                 }),

@@ -182,8 +182,6 @@ export class ManageCreatePostDto {
     customOrder = 0;
 }
 
-export class ManageCreatePostWithOutTypeDto extends OmitType(ManageCreatePostDto, ['type']) {}
-
 @DtoValidation({ groups: ['update'] })
 export class ManageUpdatePostDto extends PartialType(ManageCreatePostDto) {
     @ApiProperty({
@@ -197,8 +195,6 @@ export class ManageUpdatePostDto extends PartialType(ManageCreatePostDto) {
     @IsDefined({ groups: ['update'], message: '文章ID必须指定' })
     id!: string;
 }
-
-export class ManageUpdatePostWithOutTypeDto extends OmitType(ManageUpdatePostDto, ['type']) {}
 
 @DtoValidation({ groups: ['create'] })
 export class CreatePostDto extends OmitType(ManageCreatePostDto, ['author', 'customOrder']) {
@@ -215,8 +211,6 @@ export class CreatePostDto extends OmitType(ManageCreatePostDto, ['author', 'cus
     userOrder = 0;
 }
 
-export class CreatePostWithOutTypeDto extends OmitType(CreatePostDto, ['type']) {}
-
 @DtoValidation({ groups: ['update'] })
 export class UpdatePostDto extends OmitType(ManageUpdatePostDto, ['author', 'customOrder']) {
     @ApiPropertyOptional({
@@ -231,5 +225,3 @@ export class UpdatePostDto extends OmitType(ManageUpdatePostDto, ['author', 'cus
     @IsOptional({ always: true })
     userOrder = 0;
 }
-
-export class UpdatePostWithOutTypeDto extends OmitType(UpdatePostDto, ['type']) {}

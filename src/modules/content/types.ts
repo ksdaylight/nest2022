@@ -7,6 +7,7 @@ export type PostSearchBody = Pick<ClassToPlain<PostEntity>, 'title' | 'body' | '
 };
 export interface ContentConfig {
     searchType: SearchType;
+    postType: PostTypeOption;
 }
 
 export type PostTypeOption = `${PostBodyType}` | 'all';

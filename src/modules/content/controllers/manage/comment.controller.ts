@@ -3,7 +3,7 @@ import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { PermissionAction } from '@/modules/rbac/constants';
-import { simpleCrudOption } from '@/modules/rbac/helpers';
+import { createHookOption } from '@/modules/rbac/helpers';
 import { PermissionChecker } from '@/modules/rbac/types';
 
 import { BaseController } from '@/modules/restful/base';
@@ -28,11 +28,11 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption({ permissions, summary: '查询评论列表' }),
+            option: createHookOption({ permissions, summary: '查询评论列表' }),
         },
         {
             name: 'delete',
-            option: simpleCrudOption({ permissions, summary: '删除评论,支持批量删除' }),
+            option: createHookOption({ permissions, summary: '删除评论,支持批量删除' }),
         },
     ],
     dtos: {

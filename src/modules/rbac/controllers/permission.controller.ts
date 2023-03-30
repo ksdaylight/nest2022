@@ -8,7 +8,7 @@ import { Crud, Depends } from '@/modules/restful/decorators';
 import { PermissionAction } from '../constants';
 import { QueryPermssionDto } from '../dtos/permission.dto';
 import { PermissionEntity } from '../entities/permission.entity';
-import { simpleCrudOption } from '../helpers';
+import { createHookOption } from '../helpers';
 
 import { RbacModule } from '../rbac.module';
 
@@ -27,9 +27,9 @@ const permissions: PermissionChecker[] = [
     enabled: [
         {
             name: 'list',
-            option: simpleCrudOption({ permissions, summary: '权限查询,以分页模式展示' }),
+            option: createHookOption({ permissions, summary: '权限查询,以分页模式展示' }),
         },
-        { name: 'detail', option: simpleCrudOption({ permissions, summary: '权限详情' }) },
+        { name: 'detail', option: createHookOption({ permissions, summary: '权限详情' }) },
     ],
     dtos: {
         list: QueryPermssionDto,

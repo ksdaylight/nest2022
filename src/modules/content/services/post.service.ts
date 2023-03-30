@@ -15,14 +15,10 @@ import { UserService } from '@/modules/user/services';
 import { PostOrderType } from '../constants';
 import {
     CreatePostDto,
-    CreatePostWithOutTypeDto,
     ManageCreatePostDto,
-    ManageCreatePostWithOutTypeDto,
     ManageUpdatePostDto,
-    ManageUpdatePostWithOutTypeDto,
     QueryPostDto,
     UpdatePostDto,
-    UpdatePostWithOutTypeDto,
 } from '../dtos';
 
 import { PostEntity } from '../entities';
@@ -79,14 +75,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         return item;
     }
 
-    async create({
-        author,
-        ...data
-    }:
-        | (CreatePostDto & { author: string })
-        | (CreatePostWithOutTypeDto & { author: string })
-        | ManageCreatePostDto
-        | ManageCreatePostWithOutTypeDto) {
+    async create({ author, ...data }: (CreatePostDto & { author: string }) | ManageCreatePostDto) {
         const createPostDto = {
             ...data,
             author: await this.userService.getCurrentUser({
@@ -109,13 +98,7 @@ export class PostService extends BaseService<PostEntity, PostRepository, FindPar
         return this.detail(item.id);
     }
 
-    async update(
-        data:
-            | UpdatePostDto
-            | UpdatePostWithOutTypeDto
-            | ManageUpdatePostDto
-            | ManageUpdatePostWithOutTypeDto,
-    ) {
+    async update(data: UpdatePostDto | ManageUpdatePostDto) {
         const post = await this.detail(data.id);
         if (isArray(data.categories)) {
             await this.repository
