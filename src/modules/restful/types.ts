@@ -3,6 +3,14 @@ import { ExternalDocumentationObject } from '@nestjs/swagger/dist/interfaces/ope
 import { ClassTransformOptions } from 'class-transformer';
 
 import { Configure } from '../core/configure';
+
+import {
+    DeleteDto,
+    DeleteWithTrashDto,
+    ListQueryDto,
+    ListWithTrashedQueryDto,
+    RestoreDto,
+} from './dtos';
 /**
  * CRUD控制器方法列表
  */
@@ -26,7 +34,7 @@ export interface CrudOptions {
     id: string;
     enabled: Array<CrudMethod | CrudItem>;
     dtos: {
-        [key in 'list' | 'store' | 'update']?: Type<any>;
+        [key in CrudMethod]?: Type<any>;
     };
 }
 
@@ -72,3 +80,20 @@ export interface ApiDocOption {
     default?: ApiSwaggerOption;
     routes?: { [key: string]: ApiSwaggerOption };
 }
+
+type MethodMapping = {
+    [K in CrudMethod]?: any;
+};
+
+export const ControllerWithTrashDtos: MethodMapping = {
+    list: ListWithTrashedQueryDto,
+    delete: DeleteWithTrashDto,
+    restore: RestoreDto,
+};
+
+export const ControllerDtos: MethodMapping = {
+    list: ListQueryDto,
+    delete: DeleteDto,
+};
+
+export const CrudActions: CrudMethod[] = ['detail', 'delete', 'restore', 'list', 'store', 'update'];

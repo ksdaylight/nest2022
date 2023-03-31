@@ -7,7 +7,6 @@ import { BaseControllerWithTrash } from '@/modules/restful/base';
 
 import { Crud, Depends } from '@/modules/restful/decorators';
 
-import { ListWithTrashedQueryDto } from '@/modules/restful/dtos';
 import { Guest } from '@/modules/user/decorators';
 
 import { ContentModule } from '../content.module';
@@ -26,9 +25,7 @@ import { CategoryService } from '../services';
         },
         { name: 'detail', option: createHookOption({ summary: '分类详情', guest: true }) },
     ],
-    dtos: {
-        list: ListWithTrashedQueryDto,
-    },
+    dtos: {},
 }))
 @Controller('categories')
 export class CategoryController extends BaseControllerWithTrash<CategoryService> {
