@@ -60,11 +60,7 @@ const ownerChecker: PermissionChecker = async (ab, ref, request) =>
             }),
         },
     ],
-    dtos: {
-        store: CreatePostDto,
-        update: UpdatePostDto,
-        list: QueryPostDto,
-    },
+    dtos: {},
 }))
 @Controller('posts')
 export class PostController extends BaseControllerWithTrash<PostService> {

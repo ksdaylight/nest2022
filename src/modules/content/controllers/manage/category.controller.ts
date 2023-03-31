@@ -7,6 +7,8 @@ import { PermissionChecker } from '@/modules/rbac/types';
 import { BaseControllerWithTrash } from '@/modules/restful/base';
 import { Crud, Depends } from '@/modules/restful/decorators';
 
+import { ListWithTrashedQueryDto } from '@/modules/restful/dtos';
+
 import { ContentModule } from '../../content.module';
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dtos';
 import { CategoryEntity } from '../../entities';
@@ -45,6 +47,7 @@ const permissions: PermissionChecker[] = [
         },
     ],
     dtos: {
+        list: ListWithTrashedQueryDto,
         store: CreateCategoryDto,
         update: UpdateCategoryDto,
     },

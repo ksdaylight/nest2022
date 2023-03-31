@@ -31,8 +31,8 @@ export const registerCrud = async <T extends BaseController<any>>(
         if (isNil(Object.getOwnPropertyDescriptor(Target.prototype, name))) {
             // Target是一个类，而不是一个实例。instanceof运算符用于检查一个实例是否属于某个类或其子类。
             // 要正确检查Target类是否是BaseControllerWithTrash的子类，您需要使用prototype属性和isPrototypeOf方法。
-            // eslint-disable-next-line no-prototype-builtins
-            const isInheritedFromWithTrash = BaseControllerWithTrash.prototype.isPrototypeOf(
+            const isInheritedFromWithTrash = Object.prototype.isPrototypeOf.call(
+                BaseControllerWithTrash.prototype,
                 Target.prototype,
             );
             let descriptor: PropertyDescriptor | undefined;
@@ -54,10 +54,11 @@ export const registerCrud = async <T extends BaseController<any>>(
             }
             Object.defineProperty(Target.prototype, name, {
                 ...descriptor,
-                async [`${name}`](...args: any[]) {
+                async value(...args: any[]) {
                     return descriptor.value.apply(this, args);
                 },
             });
+            Target.prototype[name].originalName = name;
         }
 
         const descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);

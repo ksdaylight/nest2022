@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { instanceToPlain } from 'class-transformer';
 import { ExtractJwt, Strategy } from 'passport-jwt';
@@ -11,13 +11,25 @@ import { JwtPayload } from '../types';
  * 用户认证JWT策略
  */
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy) implements OnModuleInit {
+    private secretOrKey: string | Buffer;
+
     constructor(private readonly userRepository: UserRepository) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: getUserConfig('jwt.secret'),
+            secretOrKeyProvider: (
+                _req: Request,
+                _rawJwtToken: string,
+                done: (err: Error | null, secretOrKey: string | Buffer) => void,
+            ) => {
+                done(null, this.secretOrKey);
+            },
         });
+    }
+
+    async onModuleInit() {
+        this.secretOrKey = await getUserConfig('jwt.secret');
     }
 
     /**
