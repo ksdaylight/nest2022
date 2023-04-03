@@ -36,6 +36,10 @@ export const checkOwner = async <E extends ObjectLiteral>(
     permission?: string,
 ) => {
     const models = await getModels(getRequestItems(request));
+    // 如果 models 数组为空，返回 false
+    if (models.length === 0) {
+        return false;
+    }
     return models.every((model) => ability.can(permission ?? PermissionAction.OWNER, model));
 };
 

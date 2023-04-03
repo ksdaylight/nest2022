@@ -21,10 +21,15 @@ type CheckerParams = {
 };
 
 export const getCheckers = (context: ExecutionContext, reflector: Reflector) => {
+    const originalName =
+        (context.getHandler() as any).originalName !== undefined
+            ? (context.getHandler() as any).originalName
+            : context.getHandler().name;
+
     const crudCheckers = Reflect.getMetadata(
         PERMISSION_CHECKERS,
         context.getClass().prototype,
-        context.getHandler().name,
+        originalName,
     ) as PermissionChecker[];
     const defaultCheckers = reflector.getAllAndOverride<PermissionChecker[]>(PERMISSION_CHECKERS, [
         context.getHandler(),
@@ -61,6 +66,7 @@ export const solveChecker = async ({
     const results = await Promise.all(
         checkers.map(async (checker) => execChecker(checker, ability, moduleRef, request)),
     );
+    console.dir(results);
     return results.every((r) => !!r);
 };
 

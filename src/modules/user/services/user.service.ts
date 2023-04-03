@@ -238,6 +238,7 @@ export class UserService extends BaseService<UserEntity, UserRepository> impleme
             qb.andWhere('actived = :actived', { actived });
         }
         if (!isNil(options.role)) {
+            qb.leftJoinAndSelect(`${this.userRepository.qbName}.roles`, 'roles');
             qb.andWhere('roles.id IN (:...roles)', {
                 roles: [options.role],
             });
