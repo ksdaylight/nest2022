@@ -7,7 +7,6 @@
     "license": "UNLICENSED",
     "scripts": {
         "cli": "cross-env NODE_ENV=development ./src/cli.js",
-        "cli2": "cross-env NODE_ENV=development ts-node --files -T -P tsconfig.build.json -r tsconfig-paths/register ./src/main.ts",
         "prebuild": "rimraf dist",
         "build": "rimraf dist && nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
