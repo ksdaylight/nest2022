@@ -69,6 +69,7 @@ Nest-Pegasus provides a comprehensive backend solution that covers content manag
 6.  Redis integration for caching and session management.
 7.  Extensive API support with OpenAPI documentation and versioning  
 ####  ☑️Planned Features (Todo List)
+ - [ ] Implementation of third-party login using OAuth2.
  - [ ] Multilingual support.
  - [ ] API rate limiting and security measures.
  - [ ] Containerization and deployment.
