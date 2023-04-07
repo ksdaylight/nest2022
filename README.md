@@ -145,3 +145,6 @@ To help you better understand the various processes and functionalities within N
 
 ![SMS and Email Queue Flowchart](https://img.densewillow.com/blog/SMS.drawio.svg)
 
+## LICENSE
+[MIT](./LICENSE)
+  
