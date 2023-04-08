@@ -103,10 +103,16 @@ pnpm install
 ```
 
 2. **Configure environment variables**: Create a `.env` file in the root directory of the project and configure the necessary environment variables. You can use the provided `.env.example` file as a reference. 
-3. **Run database migrations**: Run the following command to perform the database migrations and seed data::
+3. **Run database migrations**: First, run the following command to generate the migration files:
+
+```
+pnpm dbmg
+```
+Next, run the following command to perform the database migrations and seed data:
 ```
 pnpm dbmr -s
 ```
+
 You can use `pnpm cli -h` to see the help for available commands. This command will perform the migrations and then seed the database with initial data.
 ## 🚀Running and Deployment
 
