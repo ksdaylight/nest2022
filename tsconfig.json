@@ -34,5 +34,6 @@
       "@/*": ["./src/*"]
     },
   },
-  "include": ["src", "test", "typings/**/*.d.ts", "**.js"]
+  "include": ["src", "test", "typings/**/*.d.ts", "**.js"],
+  "exclude": [ "**/node_modules/*", "**/dist/*", "dist", "node_modules", ]
 }
