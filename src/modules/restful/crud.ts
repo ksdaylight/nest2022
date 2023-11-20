@@ -173,6 +173,9 @@ export const registerCrud = async <T extends BaseController<any>>(
             case 'delete':
                 Delete()(Target, name, descriptor);
                 break;
+            case 'restore':
+                Patch('restore')(Target, name, descriptor);
+                break;
             default:
                 break;
         }
