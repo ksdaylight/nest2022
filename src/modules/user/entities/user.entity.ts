@@ -20,7 +20,7 @@ import { getUserConfig } from '@/modules/user/helpers';
 
 import { AccessTokenEntity } from './access-token.entity';
 import { MessageEntity } from './message.entity';
-import { MessagerecevieEntity } from './recevie.entity';
+import { MessageReceiverEntity } from './recevie.entity';
 
 /**
  * 用户模型
@@ -105,8 +105,8 @@ export class UserEntity extends BaseEntity {
     @OneToMany(() => MediaEntity, (media) => media.user)
     medias: MediaEntity[];
 
-    @OneToMany((type) => MessagerecevieEntity, (message) => message.recevier, { cascade: true })
-    messages!: MessagerecevieEntity[];
+    @OneToMany((type) => MessageReceiverEntity, (message) => message.recipients, { cascade: true })
+    messages!: MessageReceiverEntity[];
 
     @Expose()
     @ManyToMany(() => RoleEntity, (role) => role.users, { cascade: true })

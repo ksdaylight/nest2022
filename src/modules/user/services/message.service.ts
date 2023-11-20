@@ -10,7 +10,7 @@ import { RecevierActionType } from '../constants';
 import { UpdateReceviesDto } from '../dtos/message.dto';
 import { MessageEntity } from '../entities/message.entity';
 import { MessageRepository } from '../repositories/message.repository';
-import { RecevieRepository } from '../repositories/recevie.repository';
+import { ReceiverRepository } from '../repositories/receiver.repository';
 /**
  * 消息服务
  */
@@ -18,7 +18,7 @@ import { RecevieRepository } from '../repositories/recevie.repository';
 export class MessageService extends BaseService<MessageEntity, MessageRepository> {
     constructor(
         protected readonly messageRepository: MessageRepository,
-        protected readonly recevieRepository: RecevieRepository,
+        protected readonly recevieRepository: ReceiverRepository,
     ) {
         super(messageRepository);
     }
@@ -80,15 +80,15 @@ export class MessageService extends BaseService<MessageEntity, MessageRepository
      */
     async updateRecevies(data: string[], action: RecevierActionType, userId: string) {
         const receviers = await this.recevieRepository.find({
-            relations: { message: true, recevier: true },
+            relations: { message: true, recipients: true },
             where: {
                 message: { id: In(data) },
-                recevier: { id: userId },
+                recipients: { id: userId },
             },
         });
         for (const recevier of receviers) {
-            if (action === RecevierActionType.READED && !recevier.readed) {
-                recevier.readed = true;
+            if (action === RecevierActionType.READED && !recevier.isRead) {
+                recevier.isRead = true;
                 await recevier.save({ reload: true });
             }
             if (action === RecevierActionType.DELETE) {

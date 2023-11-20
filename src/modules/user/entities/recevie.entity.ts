@@ -5,13 +5,13 @@ import { UserEntity } from './user.entity';
 /**
  * 消息与接收者的中间关联表
  */
-@Entity('users_recevies')
-export class MessagerecevieEntity extends BaseEntity {
+@Entity('users_receivers')
+export class MessageReceiverEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column({ comment: '是否已读', default: false })
-    readed?: boolean;
+    isRead?: boolean;
 
     @ManyToOne(() => MessageEntity, (message) => message.recevies, {
         onDelete: 'CASCADE',
@@ -19,9 +19,9 @@ export class MessagerecevieEntity extends BaseEntity {
     })
     message!: MessageEntity;
 
-    @ManyToOne(() => UserEntity, (recevie) => recevie.messages, {
+    @ManyToOne(() => UserEntity, (receiver) => receiver.messages, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    recevier!: UserEntity;
+    recipients!: UserEntity;
 }
