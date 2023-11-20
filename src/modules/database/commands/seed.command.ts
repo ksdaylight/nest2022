@@ -30,5 +30,9 @@ export const SeedCommand: CommandItem<any, SeederArguments> = ({ configure }) =>
             default: true,
         },
     } as const,
-    handler: async (args: yargs.Arguments<SeederArguments>) => SeedHandler(args, configure),
+    handler: async (args: yargs.Arguments<SeederArguments>) => {
+        console.log('hou -----------');
+        console.dir(args);
+        SeedHandler(args, configure);
+    },
 });

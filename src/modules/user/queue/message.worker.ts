@@ -9,9 +9,9 @@ import { RedisConfig } from '@/modules/redis/types';
 
 import { SAVE_MESSAGE_QUEUE } from '../constants';
 import { MessageEntity } from '../entities/message.entity';
-import { MessagerecevieEntity } from '../entities/recevie.entity';
+import { MessageReceiverEntity } from '../entities/recevie.entity';
 import { MessageRepository } from '../repositories/message.repository';
-import { RecevieRepository } from '../repositories/recevie.repository';
+import { ReceiverRepository } from '../repositories/receiver.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { SaveMessageQueueJob } from '../types';
 
@@ -23,7 +23,7 @@ export class MessageWorker {
     constructor(
         protected messageRepository: MessageRepository,
         protected userRepository: UserRepository,
-        protected recevieRepostiroy: RecevieRepository,
+        protected recevieRepostiroy: ReceiverRepository,
         protected configure: Configure,
     ) {}
 
@@ -56,9 +56,9 @@ export class MessageWorker {
             await this.recevieRepostiroy.save(
                 await Promise.all(
                     receviers.map(async (r) => {
-                        const recevie = new MessagerecevieEntity();
+                        const recevie = new MessageReceiverEntity();
                         recevie.message = message;
-                        recevie.recevier = await this.userRepository.findOneByOrFail({ id: r });
+                        recevie.recipients = await this.userRepository.findOneByOrFail({ id: r });
                         recevie.save({ reload: true });
                         return recevie;
                     }),
