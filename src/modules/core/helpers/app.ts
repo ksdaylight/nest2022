@@ -139,11 +139,14 @@ export async function createCommands(params: CreatorData): Promise<CommandModule
     const moduleCommands: Array<CommandItem<any, any>> = Object.values(modules)
         .map((m) => m.meta.commands ?? [])
         .reduce((o, n) => [...o, ...n], []);
+    // console.dir(moduleCommands);
     const commands = [...params.commands, ...moduleCommands].map((item) => {
         const command = item(params);
         return {
             ...command,
             handler: async (args: yargs.Arguments<any>) => {
+                console.log('前 -----------');
+                console.dir(args);
                 const handler = command.handler as (
                     ...argvs: yargs.Arguments<any>
                 ) => Promise<void>;
@@ -159,7 +162,9 @@ export async function createCommands(params: CreatorData): Promise<CommandModule
 export async function buildCli(builder: () => Promise<CreatorData>) {
     const params = await builder();
     const commands = await createCommands(params);
-    console.log();
+
+    // console.log('Commands: ', JSON.stringify(commands, null, 2)); // 打印 commands 数组
+    // console.dir(yargs.argv);
     commands.forEach((command) => yargs.command(command));
     yargs
         .usage('Usage: $0 <command> [options]')
