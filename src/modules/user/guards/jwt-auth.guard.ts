@@ -46,14 +46,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      * @param context
      */
     async canActivate(context: ExecutionContext) {
-        const originalName =
-            (context.getHandler() as any).originalName !== undefined
-                ? (context.getHandler() as any).originalName
-                : context.getHandler().name;
         const crudGuest = Reflect.getMetadata(
             ALLOW_GUEST,
             context.getClass().prototype,
-            originalName,
+            context.getHandler().name,
         );
         const defaultGuest = this.reflector.getAllAndOverride<boolean>(ALLOW_GUEST, [
             context.getHandler(),

@@ -67,7 +67,7 @@ export const registerCrud = async <T extends BaseController<any>>(
                     return descriptor.value.apply(this, args);
                 },
             });
-            Target.prototype[name].originalName = name;
+            // Target.prototype[name].originalName = name;
         }
 
         const descriptor = Object.getOwnPropertyDescriptor(Target.prototype, name);
@@ -77,18 +77,17 @@ export const registerCrud = async <T extends BaseController<any>>(
         for (const action of CrudActions) {
             if (name === action) {
                 let dto = dtos[name];
-                if (!isNil(dto)) {
-                    Reflect.defineMetadata(
-                        'design:paramtypes',
-                        [dto, ...params],
-                        Target.prototype,
-                        name,
-                    );
-                } else {
+                if (isNil(dto)) {
                     dto = isInheritedFromWithTrash
                         ? ControllerWithTrashDtos[name]
                         : ControllerDtos[name];
                 }
+                Reflect.defineMetadata(
+                    'design:paramtypes',
+                    [dto, ...params],
+                    Target.prototype,
+                    name,
+                );
                 switch (name) {
                     case 'list':
                         ApiQuery({ type: dto })(Target, name, descriptor);

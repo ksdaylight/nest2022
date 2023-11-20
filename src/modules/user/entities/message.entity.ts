@@ -10,7 +10,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { MessagerecevieEntity } from './recevie.entity';
+import { MessageReceiverEntity } from './recevie.entity';
 
 import { UserEntity } from './user.entity';
 
@@ -47,10 +47,10 @@ export class MessageEntity extends BaseEntity {
     })
     sender!: UserEntity;
 
-    @OneToMany((type) => MessagerecevieEntity, (recevier) => recevier.message, {
+    @OneToMany((type) => MessageReceiverEntity, (recevier) => recevier.message, {
         cascade: true,
     })
-    recevies!: MessagerecevieEntity[];
+    recevies!: MessageReceiverEntity[];
 
-    recevier: MessagerecevieEntity;
+    recevier: MessageReceiverEntity;
 }

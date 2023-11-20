@@ -21,15 +21,10 @@ type CheckerParams = {
 };
 
 export const getCheckers = (context: ExecutionContext, reflector: Reflector) => {
-    const originalName =
-        (context.getHandler() as any).originalName !== undefined
-            ? (context.getHandler() as any).originalName
-            : context.getHandler().name;
-
     const crudCheckers = Reflect.getMetadata(
         PERMISSION_CHECKERS,
         context.getClass().prototype,
-        originalName,
+        context.getHandler().name,
     ) as PermissionChecker[];
     const defaultCheckers = reflector.getAllAndOverride<PermissionChecker[]>(PERMISSION_CHECKERS, [
         context.getHandler(),
